@@ -1,19 +1,18 @@
-namespace app.models {
+import {Base} from "../nnt/Logic";
 
-    export class Model extends logic.Base {
+export class Model extends Base {
 
-        constructor() {
-            super();
-            this.host = "http://localhost:8090/";
-            this.withCredentials = false;
-        }
+  constructor() {
+    super();
+    this.host = "http://localhost:8090/";
+    this.withCredentials = false;
+  }
 
-        iscross(): boolean {
-            return false;
-        }
+  iscross(): boolean {
+    return false;
+  }
 
-        url(): string {
-            return this.host + "?action=" + this.action;
-        }
-    }
+  url(): string {
+    return this.host + "?action=" + this.action;
+  }
 }
