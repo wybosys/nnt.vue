@@ -1,5 +1,9 @@
 <template>
-  $END$
+  <div>
+    <input/>
+    <button>echo</button>
+    <label></label>
+  </div>
 </template>
 
 <script>

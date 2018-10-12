@@ -1,10 +1,13 @@
 <template>
-
+  <echo></echo>
 </template>
 
 <script>
+import Echo from "./Echo";
+
 export default {
-  name: "Sample"
+  name: "Sample",
+  components: {Echo}
 }
 </script>
 
