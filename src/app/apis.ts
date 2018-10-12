@@ -1,6 +1,6 @@
 import {Model} from "./model-impl";
 
-namespace app.models {
+namespace models {
 
 
   export class Echoo extends Model {
@@ -45,7 +45,7 @@ namespace app.models {
 
 }
 
-namespace app.routers {
+namespace routers {
 
   export let SampleEcho = ["sample.echo", models.Echoo, ""];
 
@@ -57,7 +57,7 @@ namespace app.routers {
 
 }
 
-namespace app.api {
+namespace api {
 
   export function SampleEcho(): models.Echoo {
     return Model.NewRequest(routers.SampleEcho);
