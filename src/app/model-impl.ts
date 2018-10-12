@@ -1,10 +1,11 @@
 import {Base} from "../nnt/Logic";
+import {config} from "../nnt/Config";
 
 export class Model extends Base {
 
   constructor() {
     super();
-    this.host = "http://localhost:8090/";
+    this.host = config.get('HOST');
     this.withCredentials = false;
   }
 
