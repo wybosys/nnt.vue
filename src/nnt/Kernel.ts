@@ -1,5 +1,223 @@
 /** 序列化的接口 */
-import {CSet, KvObject, MapType, SetType} from "./Stl";
+import {CMap, CSet, KvObject, MapType, SetType} from "./Stl";
+import {Invoke1} from "./Typescript";
+import {printf} from "./Compat";
+
+/** 基础数字＋字符串 */
+type numstr = number | string | any;
+
+/** JSONOBJ+字符串 */
+type jsonobj = string | Object;
+
+/** 增加引用计数 */
+export function grab<T>(o: T): T {
+  if (o == null)
+    return undefined;
+  (<any>o).grab();
+  return o;
+}
+
+/** 减计数对象 */
+export function drop<T>(o: T): T {
+  if (o == null)
+    return undefined;
+  return (<any>o).drop();
+}
+
+/** 直接析构一个对象 */
+export function dispose<T>(o: T) {
+  if (o == null)
+    return;
+  (<any>o).dispose();
+}
+
+/** 带保护的取一堆中第一个不是空的值 */
+export function nonnull1st<T>(def: T, ...p: T[]) {
+  for (let i = 0; i < p.length; ++i) {
+    let v = p[i];
+    if (v != null)
+      return v;
+  }
+  return def;
+}
+
+/** 带保护的判断对象是不是 0 */
+export function isZero(o: any): boolean {
+  if (o == null || o == 0)
+    return true;
+  if (o.length)
+    return o.length == 0;
+  return false;
+}
+
+function SafeNumber(o: number, def = 0): number {
+  return isNaN(o) ? def : o;
+}
+
+/** 转换到 float */
+export function toFloat(o: any, def = 0): number {
+  if (o == null)
+    return def;
+  let tp = typeof(o);
+  if (tp == 'number')
+    return SafeNumber(o, def);
+  if (tp == 'string') {
+    let v = parseFloat(o);
+    return SafeNumber(v, def);
+  }
+  if (o.toNumber)
+    return o.toNumber();
+  return def;
+}
+
+/** 转换到 int */
+export function toInt(o: any, def = 0): number {
+  if (o == null)
+    return def;
+  let tp = typeof(o);
+  if (tp == 'number' || tp == 'string') {
+    let v = parseInt(o);
+    return SafeNumber(v, def);
+  }
+  if (o.toNumber)
+    return o.toNumber() >> 0;
+  return def;
+}
+
+/** 转换到数字
+ @brief 如果对象不能直接转换，会尝试调用对象的 toNumber 进行转换
+ */
+export function toNumber(o: any, def = 0): number {
+  if (o == null)
+    return def;
+  let tp = typeof(o);
+  if (tp == 'number')
+    return SafeNumber(o, def);
+  if (tp == 'string') {
+    if (o.indexOf('.') == -1) {
+      let v = parseInt(o);
+      return SafeNumber(v, def);
+    }
+    let v = parseFloat(o);
+    return SafeNumber(v, def);
+  }
+  if (o.toNumber)
+    return o.toNumber();
+  return def;
+}
+
+/** 转换到字符串 */
+export function asString(o: any, def = ''): string {
+  if (o == null)
+    return def;
+  let tp = typeof(o);
+  if (tp == 'string')
+    return o;
+  if (tp == 'number')
+    return SafeNumber(o).toString();
+  if (o.toString)
+    return o.toString();
+  return def;
+}
+
+/** 转换到json字串 */
+export function toJson(o: any, def = null): string {
+  let t = typeof(o);
+  if (t == 'string')
+    return o;
+  let r = null;
+  try {
+    r = JSON.stringify(o);
+  }
+  catch (ex) {
+    r = def;
+  }
+  return r;
+}
+
+/** 转换到对象 */
+export function toJsonObject(o: jsonobj, def = null): Object {
+  let t = typeof(o);
+  if (t == 'string')
+    return JSON.parse(<string>o);
+  else if (t == 'object')
+    return o;
+  return def;
+}
+
+/** 格式化字符串 */
+export function formatString(fmt: string, ...p: any[]): string {
+  try {
+    return Invoke1(printf, this, p, fmt);
+  } catch (err) {
+    console.exception('format: ' + fmt + '\nargus: ' + p + '\n' + err);
+  }
+  return '';
+}
+
+export function formatStringV(fmt: string, p: any[]): string {
+  try {
+    return Invoke1(printf, this, p, fmt);
+  } catch (err) {
+    console.exception('format: ' + fmt + '\nargus: ' + p + '\n' + err);
+  }
+  return '';
+}
+
+/** 格式化字符对象 */
+export class FormatString {
+  constructor(fmt?: any, ...args: any[]) {
+    this.fmt = fmt;
+    this.args = args;
+  }
+
+  /** fmt 根据业务的实现，可能为int的id，一般情况下为string，所以设置为any兼容业务的复杂性 */
+  fmt: any;
+
+  /** 带上的参数 */
+  args: any[];
+
+  toString(): string {
+    return formatStringV(this.fmt, this.args);
+  }
+}
+
+/** json处理，保护防止crash并且打印出数据 */
+export function json_encode(obj: Object): string {
+  return JSON.stringify(obj);
+}
+
+export function json_decode(str: string): any {
+  let r;
+  try {
+    r = JSON.parse(str);
+  } catch (err) {
+    console.exception(err);
+  }
+  return r;
+}
+
+/** 带保护的判断对象是不是空 */
+export function IsEmpty(o: any): boolean {
+  if (o == null)
+    return true;
+  let tp = typeof(o);
+  if (tp == 'string') {
+    if (tp.length == 0)
+      return true;
+    return o.match(/^\s*$/) != null;
+  }
+  if (o instanceof Array) {
+    return (<any>o).length == 0;
+  }
+  if (o instanceof CMap) {
+    return (<CMap<any, any> >o).length != 0;
+  }
+  if (o instanceof CSet) {
+    return (<CSet<any> >o).size != 0;
+  }
+  return Object.keys(o).length == 0;
+}
 
 export interface ISerializable {
   /** 序列化对象到流，返回结果 */
