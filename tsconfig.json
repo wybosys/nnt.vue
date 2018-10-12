@@ -6,6 +6,9 @@
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
     "moduleResolution": "node",
-    "module": "esnext"
+    "module": "esnext",
+    "lib": [
+      "esnext"
+    ]
   }
 }
