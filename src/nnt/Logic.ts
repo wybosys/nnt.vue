@@ -1,5 +1,6 @@
 import {ArrayT, asString, MultiMap, StringT, toFloat, toInt} from "./Kernel";
-import {CMap} from "./Stl";
+import {CMap, KvObject} from "./Stl";
+import {Model} from "./ApiModel";
 
 type Class<T> = { new(...args: any[]): T, [key: string]: any };
 type AnyClass = Class<any>;
@@ -399,3 +400,215 @@ function Output(mdl: any): any {
   return r;
 }
 
+export abstract class Base extends Model {
+  // --------------从core.proto中移植过来的
+  static string_t = "string";
+  static integer_t = "integer";
+  static double_t = "double";
+  static boolean_t = "boolean";
+
+  // 可选的参数
+  static optional = "optional";
+
+  // 必须的参数，不提供则忽略
+  static required = "required";
+
+  // 输入输出
+  static input = "input";
+  static output = "output";
+
+  static string(id: number, opts: string[], comment?: string): (target: any, key: string) => void {
+    let fp: FieldOption = {
+      id: id,
+      val: "",
+      input: opts.indexOf(Base.input) != -1,
+      output: opts.indexOf(Base.output) != -1,
+      optional: opts.indexOf(Base.optional) != -1,
+      string: true,
+      comment: comment
+    };
+    return (target: any, key: string) => {
+      DefineFp(target, key, fp);
+    };
+  }
+
+  static boolean(id: number, opts: string[], comment?: string): (target: any, key: string) => void {
+    let fp: FieldOption = {
+      id: id,
+      val: false,
+      input: opts.indexOf(Base.input) != -1,
+      output: opts.indexOf(Base.output) != -1,
+      optional: opts.indexOf(Base.optional) != -1,
+      boolean: true,
+      comment: comment
+    };
+    return (target: any, key: string) => {
+      DefineFp(target, key, fp);
+    };
+  }
+
+  static integer(id: number, opts: string[], comment?: string): (target: any, key: string) => void {
+    let fp: FieldOption = {
+      id: id,
+      val: 0,
+      input: opts.indexOf(Base.input) != -1,
+      output: opts.indexOf(Base.output) != -1,
+      optional: opts.indexOf(Base.optional) != -1,
+      integer: true,
+      comment: comment
+    };
+    return (target: any, key: string) => {
+      DefineFp(target, key, fp);
+    };
+  }
+
+  static double(id: number, opts: string[], comment?: string): (target: any, key: string) => void {
+    let fp: FieldOption = {
+      id: id,
+      val: 0.,
+      input: opts.indexOf(Base.input) != -1,
+      output: opts.indexOf(Base.output) != -1,
+      optional: opts.indexOf(Base.optional) != -1,
+      double: true,
+      comment: comment
+    };
+    return (target: any, key: string) => {
+      DefineFp(target, key, fp);
+    };
+  }
+
+  // 定义数组
+  static array(id: number, clz: clazz_type, opts: string[], comment?: string): (target: any, key: string) => void {
+    let fp: FieldOption = {
+      id: id,
+      input: opts.indexOf(Base.input) != -1,
+      output: opts.indexOf(Base.output) != -1,
+      optional: opts.indexOf(Base.optional) != -1,
+      array: true,
+      valtype: clz,
+      comment: comment
+    };
+    return (target: any, key: string) => {
+      DefineFp(target, key, fp);
+    };
+  }
+
+  // 定义映射表
+  static map(id: number, keytyp: clazz_type, valtyp: clazz_type, opts: string[], comment?: string): (target: any, key: string) => void {
+    let fp: FieldOption = {
+      id: id,
+      input: opts.indexOf(Base.input) != -1,
+      output: opts.indexOf(Base.output) != -1,
+      optional: opts.indexOf(Base.optional) != -1,
+      map: true,
+      keytype: keytyp,
+      valtype: valtyp,
+      comment: comment
+    };
+    return (target: any, key: string) => {
+      DefineFp(target, key, fp);
+    };
+  }
+
+  static multimap(id: number, keytyp: clazz_type, valtyp: clazz_type, opts: string[], comment?: string): (target: any, key: string) => void {
+    let fp: FieldOption = {
+      id: id,
+      input: opts.indexOf(Base.input) != -1,
+      output: opts.indexOf(Base.output) != -1,
+      optional: opts.indexOf(Base.optional) != -1,
+      multimap: true,
+      keytype: keytyp,
+      valtype: valtyp,
+      comment: comment
+    };
+    return (target: any, key: string) => {
+      DefineFp(target, key, fp);
+    };
+  }
+
+  // json对象
+  static json(id: number, opts: string[], comment?: string): (target: any, key: string) => void {
+    let fp: FieldOption = {
+      id: id,
+      input: opts.indexOf(Base.input) != -1,
+      output: opts.indexOf(Base.output) != -1,
+      optional: opts.indexOf(Base.optional) != -1,
+      json: true,
+      comment: comment
+    };
+    return (target: any, key: string) => {
+      DefineFp(target, key, fp);
+    };
+  }
+
+  // 使用其他类型
+  static type(id: number, clz: clazz_type, opts: string[], comment?: string): (target: any, key: string) => void {
+    let fp: FieldOption = {
+      id: id,
+      input: opts.indexOf(Base.input) != -1,
+      output: opts.indexOf(Base.output) != -1,
+      optional: opts.indexOf(Base.optional) != -1,
+      valtype: clz,
+      comment: comment
+    };
+    return (target: any, key: string) => {
+      DefineFp(target, key, fp);
+    };
+  }
+
+  // 枚举
+  static enumerate(id: number, clz: any, opts: string[], comment?: string): (target: any, key: string) => void {
+    let fp: FieldOption = {
+      id: id,
+      input: opts.indexOf(Base.input) != -1,
+      output: opts.indexOf(Base.output) != -1,
+      optional: opts.indexOf(Base.optional) != -1,
+      valtype: clz,
+      enum: true,
+      comment: comment
+    };
+    return (target: any, key: string) => {
+      DefineFp(target, key, fp);
+    };
+  }
+
+  // 文件类型
+  static file(id: number, opts: string[], comment?: string): (target: any, key: string) => void {
+    let fp: FieldOption = {
+      id: id,
+      input: opts.indexOf(Base.input) != -1,
+      output: opts.indexOf(Base.output) != -1,
+      optional: opts.indexOf(Base.optional) != -1,
+      file: true,
+      comment: comment
+    };
+    return (target: any, key: string) => {
+      DefineFp(target, key, fp);
+    };
+  }
+
+  fields(): KvObject<string, string> {
+    return Encode(this);
+  }
+
+  unserialize(respn: any): boolean {
+    Decode(this, respn.data || {});
+    return true;
+  }
+
+  responseCode(): number {
+    return this.response.code;
+  }
+
+  responseMessage(): string {
+    return this.response.data;
+  }
+}
+
+// 构造一个请求对象
+export function NewRequest<T extends Base>(req: any): T {
+  let clz: any = req[1];
+  let r = new clz();
+  r.action = req[0];
+  return r;
+}
