@@ -3,7 +3,6 @@ const path = require('path')
 const utils = require('./utils')
 const config = require('../config')
 const vueLoaderConfig = require('./vue-loader.conf')
-const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
 function resolve(dir) {
   return path.join(__dirname, '..', dir)
@@ -22,8 +21,7 @@ module.exports = {
       : config.dev.assetsPublicPath
   },
   resolve: {
-    extensions: ['.js', '.ts', '.vue', '.json'],
-    plugins: [new TsconfigPathsPlugin({/*configFile: "./path/to/tsconfig.json" */})],
+    extensions: ['.js', '.ts', '.tsx', '.vue', '.json'],
     alias: {
       'vue$': 'vue/dist/vue.esm.js',
       '@': resolve('src'),
@@ -39,14 +37,14 @@ module.exports = {
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        include: [resolve('src'), resolve('test'), resolve('node_modules/webpack-dev-server/client')]
+        include: [resolve('src'), resolve('node_modules/webpack-dev-server/client')]
       },
       {
-        test: /\.ts$/,
+        test: /\.tsx?$/,
         loader: 'ts-loader',
-        include: [resolve('src'), resolve('test')],
+        include: [resolve('src')],
         options: {
-          appendTsSuffixTo: [/TS\.vue$/]
+          appendTsSuffixTo: [/\.vue$/]
         }
       },
       {

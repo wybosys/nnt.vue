@@ -2,6 +2,10 @@
   "compilerOptions": {
     "baseUrl": "src",
     "target": "es5",
-    "sourceMap": true
+    "sourceMap": true,
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
+    "moduleResolution": "node",
+    "module": "esnext"
   }
 }
