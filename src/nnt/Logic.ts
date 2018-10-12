@@ -1,5 +1,5 @@
 import {ArrayT, asString, MultiMap, StringT, toFloat, toInt} from "./Kernel";
-import {CMap, KvObject} from "./Stl";
+import {KvObject} from "./Stl";
 import {Model} from "./ApiModel";
 
 type Class<T> = { new(...args: any[]): T, [key: string]: any };
@@ -180,7 +180,7 @@ function Decode(mdl: any, params: any) {
           keyconv = toInt;
         else if (fp.keytype == double_t)
           keyconv = toFloat;
-        let map = new CMap();
+        let map = new Map();
         if (val) {
           if (typeof(fp.valtype) == "string") {
             if (fp.valtype == string_t) {
