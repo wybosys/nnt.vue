@@ -2192,3 +2192,23 @@ export class StringT {
     return out;
   }
 }
+
+/** 错误的类型 */
+export class Failed {
+  constructor(code: number, msg?: string, lmsg?: string) {
+    this.code = code;
+    this.message = msg;
+    if (lmsg == null)
+      lmsg = msg;
+    this.locationMessage = lmsg;
+  }
+
+  message: string;
+  locationMessage: string;
+  code: number;
+  line: number;
+
+  toString(): string {
+    return this.code + ': ' + this.locationMessage;
+  }
+}

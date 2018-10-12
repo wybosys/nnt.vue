@@ -1,4 +1,4 @@
-import {SObject, UrlT} from "./Kernel";
+import {Failed, SObject, UrlT} from "./Kernel";
 import {
   SignalChanged,
   SignalClose,
@@ -9,6 +9,7 @@ import {
   SignalOpen, SignalTimeout
 } from "./Signals";
 import {KvObject} from "./Stl";
+import has = Reflect.has;
 
 export enum HttpMethod {
   GET,
@@ -51,14 +52,16 @@ export class CHttpConnector extends SObject {
   useCredentials() {
   }
 
-  fullUrl(): string {
+  fullUrl(fields?: KvObject<string, any>): string {
     let r = this.url;
-    if (this.fields) {
+    if (!fields)
+      fields = this.fields;
+    if (fields) {
       if (r.indexOf('?') == -1)
         r += '?';
       else
         r += '&';
-      r += UrlT.MapToField(this.fields);
+      r += UrlT.MapToField(fields);
     }
     return r;
   }
@@ -94,3 +97,80 @@ export abstract class CSocketConnector extends SObject {
   abstract watch(obj: any, on: boolean);
 }
 
+// network
+export class HttpConnector extends CHttpConnector {
+  constructor() {
+    super();
+    this._imp.onreadystatechange = ev => {
+      this._cb_readystate(ev);
+    };
+    this._imp.onerror = (ev: ProgressEvent) => {
+      this._cb_error(ev);
+    };
+  }
+
+  dispose() {
+    super.dispose();
+    this._imp = undefined;
+  }
+
+  private _imp = new XMLHttpRequest();
+
+  start() {
+    this.data = null;
+
+    // 判断有没有上传文件
+    let hasfile = false;
+    if (this.fields) {
+      for (let k in this.fields) {
+        let v = this.fields[k];
+        if (v instanceof File) {
+          hasfile = true;
+          break;
+        }
+      }
+      // 有文件必须走post
+      if (hasfile)
+        this.method = HttpMethod.POST;
+    }
+
+    if (this.method == HttpMethod.GET) {
+      this._imp.open('GET', this.fullUrl());
+      this._imp.send();
+    }
+    else {
+      this._imp.open('POST', this.url);
+      if (hasfile) {
+        this._imp.setRequestHeader("Content-Type", "multipart/form-data");
+        let form = new FormData();
+        for (let k in this.fields)
+          form.append(k, this.fields[k]);
+        this._imp.send(form);
+      } else {
+        this._imp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        let d = UrlT.MapToField(this.fields);
+        this._imp.send(d);
+      }
+    }
+  }
+
+  useCredentials() {
+    this._imp.withCredentials = true;
+  }
+
+  private _cb_readystate(ev: Event) {
+    switch (this._imp.readyState) {
+      case XMLHttpRequest.DONE: {
+        this.data = this._imp ? this._imp.response : null;
+        this.signals.emit(SignalDone, this.data);
+        this.signals.emit(SignalEnd);
+      }
+        break;
+    }
+  }
+
+  private _cb_error(ev: ProgressEvent) {
+    this.signals.emit(SignalFailed, new Failed(-1, "网络连接失败"));
+    this.signals.emit(SignalEnd);
+  }
+}
