@@ -603,12 +603,12 @@ export abstract class Base extends Model {
   responseMessage(): string {
     return this.response.data;
   }
-}
 
-// 构造一个请求对象
-export function NewRequest<T extends Base>(req: any): T {
-  let clz: any = req[1];
-  let r = new clz();
-  r.action = req[0];
-  return r;
+  // 构造一个请求对象
+  static NewRequest<T extends Base>(req: any): T {
+    let clz: any = req[1];
+    let r = new clz();
+    r.action = req[0];
+    return r;
+  }
 }
