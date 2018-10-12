@@ -545,3 +545,146 @@ export class Signals {
     tgt.signals.__invtargets.delete(this);
   }
 }
+
+// 遇到了一个异常
+export const SignalException = "::nn::exception";
+
+// 动作完成，通常代表成功后的完成
+export const SignalDone = "::nn::done";
+
+// 成功
+export const SignalSucceed = "::nn::done";
+export const SignalOk = "::nn::done";
+
+// 超时
+export const SignalTimeout = "::nn::timeout";
+
+// 动作结束，和完成概念不一样，代表一个阶段的结束
+export const SignalEnd = "::nn::end";
+
+// 动作开始
+export const SignalStart = "::nn::start";
+
+// 动作退出
+export const SignalExit = "::nn::exit";
+
+// 改变已经发生(改变只有设置不同的数据时发生)
+export const SignalChanged = "::nn::changed";
+
+// 发生更新(跟新和改变的区别为，更新可以为重复设置相同的数据)
+export const SignalUpdated = "::nn::update::need";
+
+// 暂停
+export const SignalPaused = "::nn::paused";
+
+// 恢复
+export const SignalResume = "::nn::resume";
+
+// 数据发生改变
+export const SignalDataChanged = "::nn::data::changed";
+
+// 项目发生改变
+export const SignalItemChanged = "::nn::item::changed";
+
+// 取消
+export const SignalCancel = "::nn::cancel";
+
+// 失败
+export const SignalFailed = "::nn::failed";
+
+// 正在添加，位于 added 之前激发
+export const SignalAdding = "::nn::adding";
+
+// 已经添加
+export const SignalAdded = "::nn::added";
+
+// 正在移除，位于 remove 之前激发
+export const SignalRemoving = "::nn::removing";
+
+// 已经移除
+export const SignalRemoved = "::nn::removed";
+
+// 显示状态变更
+export const SignalVisibleChanged = "::nn::visible::changed";
+
+// 需要重新动作一下
+export const SignalNeedRedo = "::nn::redo::need";
+
+// 需要刷新
+export const SignalNeedReload = "::nn::reload::need";
+
+// 需要强制刷新
+export const SignalNeedFlush = "::nn::flush::need";
+
+// 新的项目发生
+export const SignalNewChanged = "::nn::new::changed";
+
+// 请求一个动作，例如计时器到时
+export const SignalAction = "::nn::action";
+
+// 选择产生了变化
+export const SignalSelected = "::nn::selection::on";
+export const SignalDeselected = "::nn::selection::off";
+
+// 选中的变化，一般data会带上 {old, now} 两个数据
+export interface SelectionData {
+  old: any;
+  now: any;
+};
+export const SignalSelectionChanged = "::nn::selection::changed";
+export const SignalSelectionChanging = "::nn::selection::changing";
+
+// 加载成功
+export const SignalLoaded = "::nn::loaded";
+
+// 激活
+export const SignalActivated = "::nn::activated";
+export const SignalDeactivated = "::nn::deactivated";
+
+// 聚焦
+export const SignalFocusGot = "::nn::focus::got";
+export const SignalFocusLost = "::nn::focus::lost";
+
+// 约束条件发生了变化，例如 ui 的内容产生了需要改变 ui 尺寸的动作
+export const SignalConstriantChanged = "::nn::constriant::changed";
+
+// 点击
+export const SignalClicked = "::nn::clicked";
+
+// 元素点击
+export const SignalItemClicked = "::nn::item::clicked";
+
+// 触摸相关
+export const SignalTouchBegin = "::nn::touch::begin"; // 开始
+export const SignalTouchEnd = "::nn::touch::end"; // 结束
+export const SignalTouchMove = "::nn::touch::move"; // 移动
+
+// 按键相关
+export const SignalKeyPress = "::nn::key::press"; // 任意键
+export const SignalEnterKey = "::nn::key::enter"; // 回车键
+
+// 滚动相关
+export const SignalScrollBegin = "::nn::scroll::begin";
+export const SignalScrollEnd = "::nn::scroll::end";
+export const SignalScrolled = "::nn::scroll::changed";
+
+// 请求一次 hitTest 的判定
+export const SignalHitTest = "::nn::hittest";
+
+// 尺寸的改变
+export const SignalFrameChanged = "::nn::frame::changed";
+
+// 状态的改变
+export const SignalStateChanged = "::nn::state::changed";
+
+// 朝向变化
+export const SignalOrientationChanged = "::nn::orientation::changed";
+
+// 打开
+export const SignalOpening = "::nn::opening";
+export const SignalOpen = "::nn::open";
+export const SignalConnected = "::nn::connected";
+
+// 关闭
+export const SignalClosing = "::nn::Closing";
+export const SignalClose = "::nn::close";

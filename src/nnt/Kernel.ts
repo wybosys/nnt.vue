@@ -2,12 +2,16 @@
 import {CMap, CSet, KvObject, MapType, SetType} from "./Stl";
 import {Invoke1} from "./Typescript";
 import {printf} from "./Compat";
+import {Signals} from "./Signals";
+
+// 默认的时间单位，秒
+export type Interval = number;
 
 /** 基础数字＋字符串 */
-type numstr = number | string | any;
+export type numstr = number | string | any;
 
 /** JSONOBJ+字符串 */
-type jsonobj = string | Object;
+export type jsonobj = string | Object;
 
 /** 增加引用计数 */
 export function grab<T>(o: T): T {
@@ -243,6 +247,145 @@ export interface ICacheObject {
 
   // 值
   valueForCache(): any;
+}
+
+/** 基类的接口 */
+export interface IObject {
+  dispose(): void;
+}
+
+/** 引用计数的接口 */
+export interface IReference {
+  drop(): void;
+
+  grab(): void;
+}
+
+/** 默认的Object接口 */
+export interface IRefObject extends IObject, IReference {
+}
+
+export interface ISObject {
+  signals: Signals;
+}
+
+/** 带有信号的基类
+ @brief 如果不能直接基类，需要实现信号的相关函数 */
+export class SObject implements IRefObject, ISObject {
+  /** 构造函数 */
+  constructor() {
+  }
+
+  tag: any;
+
+  /** 唯一id */
+  static HashCode = 0;
+  hashCode: number = ++SObject.HashCode;
+
+  // 已经析构掉，用来 debug 模式下防止多次析构
+  __disposed = false;
+
+  /** 析构函数 */
+  dispose() {
+    if (this.__disposed) {
+      console.warn("对象 " + this + " 已经析构");
+    }
+    this.__disposed = true;
+
+    if (this._attachs) {
+      ArrayT.Clear(this._attachs, (o: any) => {
+        drop(o);
+      });
+    }
+
+    if (this._signals) {
+      this._signals.dispose();
+      this._signals = undefined;
+    }
+  }
+
+  /** 实现注册信号
+   @note 业务通过重载此函数并通过调用 this._signals.register 来注册信号
+   */
+  protected _initSignals() {
+  }
+
+  /** 信号 */
+  protected _signals: Signals;
+  get signals(): Signals {
+    if (this._signals)
+      return this._signals;
+    this._instanceSignals();
+    return this._signals;
+  }
+
+  protected _instanceSignals() {
+    this._signals = new Signals(this);
+    this._initSignals();
+  }
+
+  /** 绑定一个生命期 */
+  private _attachs: Array<any>;
+
+  attach(o: any) {
+    // 如果不存在生命期维护，则直接放弃
+    if (o.grab == undefined)
+      return;
+    if (this._attachs == null)
+      this._attachs = new Array<any>();
+    o.grab();
+    this._attachs.push(o);
+  }
+
+  detach(o: any) {
+    if (o.drop == undefined)
+      return;
+    if (this._attachs == null)
+      return;
+    o.drop();
+    ArrayT.RemoveObject(this._attachs, o);
+  }
+
+  /** 维护一个内部的引用计数器，防止对象的提前析构 */
+  protected _refcnt = 1;
+
+  /** 释放一次引用，如果到0则析构对象 */
+  drop() {
+    if (this.__disposed) {
+      console.warn("对象 " + this + " 已经析构");
+    }
+
+    if (--this._refcnt == 0)
+      this.dispose();
+  }
+
+  /** 增加一次引用 */
+  grab() {
+    ++this._refcnt;
+  }
+
+  /** 调用自己 */
+  callself<implT>(cb: (s: implT) => void, ctx?: any): implT {
+    cb.call(ctx ? ctx : this, this);
+    return <any>this;
+  }
+
+  /** 获得自己，为了支持 InstanceType */
+  get obj(): this {
+    return this;
+  }
+
+  /** 测试自己是否为空 */
+  isnull(): boolean {
+    if (this.__disposed)
+      return true;
+    return false;
+  }
+
+  /** 比较函数 */
+  isEqual(r: this): boolean {
+    return this == r;
+  }
 }
 
 /** 时间日期 */
@@ -1612,4 +1755,240 @@ export class MultiMap<K, V> {
   }
 
   private _map = new IndexedMap<K, Array<V>>();
+}
+
+export class UrlT {
+  constructor(uri?: string) {
+    if (uri)
+      this.parseString(uri);
+  }
+
+  parseString(uri: string) {
+    if (isZero(uri)) {
+      console.log("不能解析传入的 URI 信息");
+      return;
+    }
+
+    let s = uri.split('?');
+    if (s.length == 1)
+      s = ['', s[0]];
+    this.domain = s[0];
+    let fs = s[1];
+    if (fs && fs.length) {
+      fs.split('&').forEach((s) => {
+        if (!s || s.length == 0)
+          return;
+        let fs = s.split('=');
+        this.fields[fs[0]] = fs[1] ? fs[1] : null;
+      });
+    }
+  }
+
+  fields = new KvObject<string, string>();
+  domain = '';
+
+  toString(): string {
+    let r = '';
+    if (this.domain.length) {
+      if (/\:\/\//i.test(this.domain) == false)
+        r += 'http://';
+      r += this.domain;
+      if (this.domain.indexOf('?') == -1 &&
+        !MapT.IsEmpty(this.fields))
+        r += '?';
+    }
+    r += UrlT.MapToField(this.fields);
+    return r;
+  }
+
+  static MapToField(m: KvObject<any, any>): string {
+    let arr = [];
+    MapT.Foreach(m, (k, v) => {
+      arr.push(k + "=" + this.encode(v));
+    }, this);
+    return arr.join('&');
+  }
+
+  static encode(str: string): string {
+    return encodeURIComponent(str);
+  }
+
+  static decode(d: string): string {
+    return decodeURIComponent(d);
+  }
+
+  /** 字符串打包，encode测试发现在native状态下，如果使用urlloader发送，则放在参数中的例如http://之类的字符串会被恢复编码，导致500错误 */
+  static pack(str: string, uri: boolean = true): string {
+    let r = btoa(str);
+    if (uri)
+      return encodeURIComponent(r);
+    return r;
+  }
+
+  static unpack(str: string, uri: boolean = true): string {
+    let r = atob(str);
+    if (uri)
+      return decodeURIComponent(r);
+    return r;
+  }
+
+  static htmlEncode(s: string): string {
+    if (s.length == 0)
+      return "";
+    s = s.replace(/&/g, "&amp;");
+    s = s.replace(/</g, "&lt;");
+    s = s.replace(/>/g, "&gt;");
+    s = s.replace(/ /g, "&nbsp;");
+    s = s.replace(/\'/g, "&#39;");
+    s = s.replace(/\"/g, "&quot;");
+    return s;
+  }
+
+  static htmlDecode(s: string): string {
+    if (s.length == 0)
+      return "";
+    s = s.replace(/&amp;/g, "&");
+    s = s.replace(/&lt;/g, "<");
+    s = s.replace(/&gt;/g, ">");
+    s = s.replace(/&nbsp;/g, " ");
+    s = s.replace(/&#39;/g, "\'");
+    s = s.replace(/&quot;/g, "\"");
+    return s;
+  }
+}
+
+export function Delay(sec: Interval, cb: Function, ctx?: any) {
+  setTimeout(() => {
+    cb.call(ctx);
+  }, sec * 1000);
+}
+
+export function Defer(cb: Function, ctx?: any) {
+  setTimeout(() => {
+    cb.call(ctx);
+  }, 0);
+}
+
+/** 全局的不可释放的唯一实例 */
+export interface IShared {
+  // 约定该实例名称为shared
+  // static shared = new IMPL_TYPE();
+}
+
+export interface ICacheRecord extends IReference {
+  /** 使用缓存的实际数据对象 */
+  use(): any;
+
+  /** 设置缓存的实际数据对象的属性，如果isnull跳过 */
+  prop(k: any, v: any);
+
+  /** 是否为空 */
+  isnull: boolean;
+}
+
+export class CacheRecord implements ICacheRecord {
+  key: string; // 键
+  val: any; // 数据对象
+  ts: number; // 时间戳
+
+  count: number = 0; // 计数器
+  fifo: boolean; // 位于fifo中
+  mulo: boolean; // 位于mulo中
+
+  get isnull(): boolean {
+    return this.val == null;
+  }
+
+  use(): any {
+    this.count += 1;
+    return this.val;
+  }
+
+  prop(k: any, v: any) {
+    if (this.val)
+      this.val[k] = v;
+  }
+
+  grab() {
+    this.count += 1;
+  }
+
+  drop() {
+    this.count -= 1;
+  }
+}
+
+/** 基础缓存实现 */
+export class Memcache implements IShared {
+  // 存储所有的对象，用来做带key的查找
+  protected _maps = new KvObject<any, CacheRecord>();
+  protected _records = new Array<CacheRecord>();
+
+  // 是否启用
+  enable: boolean = true;
+
+  /** 添加一个待缓存的对象 */
+  cache<T extends ICacheObject>(obj: T): CacheRecord {
+    if (!this.enable) {
+      let t = new CacheRecord();
+      t.val = obj.valueForCache();
+      return t;
+    }
+
+    let ks = obj.keyForCache();
+    if (ks == null) {
+      console.error("放到缓存中的对象没有提供 mcKey");
+      return null;
+    }
+
+    // 查找老的
+    let rcd: CacheRecord = this._maps[ks];
+    if (rcd) {
+      rcd.val = obj.valueForCache();
+      rcd.ts = obj.cacheTime > 0 ? obj.cacheTime + DateTime.Now() : 0;
+      return rcd;
+    }
+
+    // 初始化一个新的缓存记录
+    rcd = new CacheRecord();
+    rcd.key = ks;
+    rcd.val = obj.valueForCache();
+    rcd.ts = obj.cacheTime > 0 ? obj.cacheTime + DateTime.Now() : 0;
+
+    this._records.push(rcd);
+    this._maps[ks] = rcd;
+
+    // todo GC得操作
+    return rcd;
+  }
+
+  // 执行一次淘汰验证
+  gc() {
+    let rms = ArrayT.RemoveObjectsByFilter(this._records, (rcd: CacheRecord): boolean => {
+      return rcd.count <= 0;
+    });
+    rms.forEach((rcd: CacheRecord) => {
+      this.doRemoveObject(rcd);
+    });
+  }
+
+  /** 获得缓存对象 */
+  query(ks: string): ICacheRecord {
+    let rcd: CacheRecord = this._maps[ks];
+    if (rcd == null)
+      return null;
+    if (rcd.ts > 0 && rcd.ts <= DateTime.Now()) {
+      // 为了下一次将过期的清理掉
+      rcd.count = 0;
+      return null;
+    }
+    return rcd;
+  }
+
+  /** override 回调处理移除一个元素 */
+  protected doRemoveObject(rcd: CacheRecord) {
+    MapT.RemoveKey(this._maps, rcd.key);
+  }
+
+  static shared = new Memcache();
 }
