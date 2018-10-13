@@ -1,6 +1,7 @@
 import {KvObject} from "./Stl";
 
 class _Config {
+  [key: string]: any;
 
   // 默认配置
   default(cfg: KvObject<string, any>) {
