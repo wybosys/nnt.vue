@@ -2,6 +2,7 @@ import {Model, VERBOSE} from "./ApiModel";
 import {DateTime, ISObject, Memcache, SObject} from "./Kernel";
 import {SignalDone, SignalEnd, SignalFailed, SignalStart, SignalSucceed, SignalTimeout, Slot} from "./Signals";
 import {HttpConnector, HttpMethod} from "./Connector";
+import {config} from "./Config";
 
 export class _CrossLoader {
   private static _regID: number = 0;
@@ -129,6 +130,9 @@ class _RestSession extends SObject {
       // 增加sessionid以解决cookie不稳定导致的问题
       if (this.SID)
         url += '&_sid=' + this.SID;
+      // 支持devops
+      if (!config.get('DEVOPS_RELEASE'))
+        url += '&_skippermission=1';
 
       m._urlreq.url = url;
       m._urlreq.method = m.method;
