@@ -9,7 +9,6 @@ import {
   SignalOpen, SignalTimeout
 } from "./Signals";
 import {KvObject} from "./Stl";
-import has = Reflect.has;
 
 export enum HttpMethod {
   GET,

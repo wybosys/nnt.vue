@@ -1,6 +1,8 @@
-import {ArrayT, asString, MultiMap, StringT, toFloat, toInt} from "./Kernel";
+import {ArrayT, asString, DateTime, Delay, MultiMap, StringT, toFloat, toInt, toJsonObject} from "./Kernel";
 import {KvObject} from "./Stl";
 import {Model} from "./ApiModel";
+import {WebSocketConnector} from "./SocketSession";
+import {UniqueId} from "./Application";
 
 type Class<T> = { new(...args: any[]): T, [key: string]: any };
 type AnyClass = Class<any>;
@@ -610,5 +612,102 @@ export abstract class Base extends Model {
     let r = new clz();
     r.action = req[0];
     return r;
+  }
+}
+
+export class SocketConnector extends WebSocketConnector {
+
+  // 自动重连
+  autoReconnect = true;
+
+  protected onClose(e: CloseEvent) {
+    super.onClose(e);
+
+    if (e.code == 1000) {
+      // 服务端主动断开的链接，不能进行重连
+      let reason = <any>toJsonObject(e.reason);
+      switch (reason.code) {
+        case -859:
+          console.info("没有登录，所以服务器主动断开了连接");
+          break;
+        case -860:
+          console.info("请求了错误的ws协议");
+          break;
+        case -858:
+          console.info("服务器关闭");
+          break;
+        case -4:
+          console.info("多端登录");
+          break;
+      }
+      return;
+    }
+    else {
+      // 尝试重连
+      if (this.autoReconnect) {
+        Delay(this._reconnect_counter++, () => {
+          this.doReconnect();
+        }, this);
+      }
+    }
+  }
+
+  protected onError(e: ErrorEvent) {
+    super.onError(e);
+    console.log(e.message);
+
+    if (this.autoReconnect) {
+      Delay(this._reconnect_counter++, () => {
+        this.doReconnect();
+      }, this);
+    }
+  }
+
+  protected doReconnect() {
+    console.log("尝试第" + this._reconnect_counter + "次重新连接");
+    this.open();
+  }
+
+  private _reconnect_counter = 0;
+
+  protected onMessage(data: any, e: MessageEvent) {
+    // 需要对data进行处理，把服务端的IMPMessage结构数据提取出来
+    super.onMessage({
+      _cmid: data.d,
+      code: data.s === undefined ? 0 : data.s,
+      data: data.p,
+      quiet: data.q
+    }, e);
+  }
+
+  write(d: Model) {
+    let params = {
+      _cmid: d.hashCode,
+      _sid: this.session.SID,
+      _cid: UniqueId(),
+      _ts: DateTime.Now(),
+      action: d.action,
+    };
+    let fields = d.fields();
+    for (let k in fields) {
+      params[k] = fields[k];
+    }
+    super.write(params);
+  }
+
+  watch(d: Model, on: boolean) {
+    let params = {
+      _cmid: d.hashCode,
+      _sid: this.session.SID,
+      _cid: UniqueId(),
+      _ts: DateTime.Now(),
+      _listen: on ? 1 : 2, // 对应于服务器设置的 ListenMode.LISTEN/UNLISTEN
+      action: d.action,
+    };
+    let fields = d.fields();
+    for (let k in fields) {
+      params[k] = fields[k];
+    }
+    super.write(params);
   }
 }

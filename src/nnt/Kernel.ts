@@ -2212,3 +2212,12 @@ export class Failed {
     return this.code + ': ' + this.locationMessage;
   }
 }
+
+/** 编解码 */
+export interface ICodec {
+  /** 编码 */
+  encode(s: string): string;
+
+  /** 解码 */
+  decode(d: any): string;
+}
