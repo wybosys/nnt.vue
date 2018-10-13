@@ -130,9 +130,6 @@ class _RestSession extends SObject {
       // 增加sessionid以解决cookie不稳定导致的问题
       if (this.SID)
         url += '&_sid=' + this.SID;
-      // 支持devops
-      if (!config.get('DEVOPS_RELEASE'))
-        url += '&_skippermission=1';
 
       m._urlreq.url = url;
       m._urlreq.method = m.method;
