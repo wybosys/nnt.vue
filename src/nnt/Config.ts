@@ -6,7 +6,7 @@ class _Config {
   default(cfg: KvObject<string, any>) {
     for (let k in cfg) {
       if (!(k in this._cur)) {
-        this._cur[k] = cfg[k];
+        this[k] = this._cur[k] = cfg[k];
       }
     }
   }
@@ -16,7 +16,7 @@ class _Config {
     if (!location.hostname.match(host))
       return;
     for (let k in cfg) {
-      this._cur[k] = cfg[k];
+      this[k] = this._cur[k] = cfg[k];
     }
   }
 
@@ -25,7 +25,14 @@ class _Config {
   }
 
   set(key: string, val: any) {
-    this._cur[key] = val;
+    this[key] = this._cur[key] = val;
+  }
+
+  delete(key: string) {
+    if (key in this._cur) {
+      delete this._cur[key];
+      delete this[key];
+    }
   }
 
   private _cur: KvObject<string, any> = {};
