@@ -16,11 +16,12 @@ import {SignalEnd, SignalFailed, SignalStart, SignalSucceed, SignalTimeout, Slot
 import {KvObject} from "./Stl";
 import {CHttpConnector, HttpMethod} from "./Connector";
 import {Hud} from "./Hud";
+import {config} from "./Config";
 
 export const ERROR_NETWORK_FAILED = -0xFFFFFFFE;
 
 // todo 换到跟随配置
-export const VERBOSE = true;
+export const VERBOSE = !config.get('DEVOPS_RELEASE');
 
 /* 用法
    let m = new app.model.Test();
