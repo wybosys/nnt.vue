@@ -7,9 +7,10 @@
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "devops": "npm run dev",
-    "devops-stop": "node build/tools.js stop",
+    "devops-stop": "npm run stop",
     "devops-restart": "npm run dev",
     "start": "npm run dev",
+    "stop": "node build/tools.js stop",
     "build": "node build/build.js"
   },
   "dependencies": {
