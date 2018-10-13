@@ -6,12 +6,13 @@ export class Model extends Base {
   constructor() {
     super();
     this.host = config.get('HOST');
-    this.withCredentials = false;
   }
 
   iscross(): boolean {
     return false;
   }
+
+  domain: string;
 
   url(): string {
     return this.host + "?action=" + this.action;
