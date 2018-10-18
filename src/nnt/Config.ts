@@ -4,11 +4,9 @@ class _Config {
   [key: string]: any;
 
   // 默认配置
-  default(cfg: KvObject<string, any>) {
+  override(cfg: KvObject<string, any>) {
     for (let k in cfg) {
-      if (!(k in this._cur)) {
-        this[k] = this._cur[k] = cfg[k];
-      }
+      this[k] = this._cur[k] = cfg[k];
     }
   }
 

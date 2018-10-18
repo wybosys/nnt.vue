@@ -4,12 +4,12 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import App from './App.vue'
 import router from './router'
-import {config} from "./nnt/Config";
+import {config} from "./nnt/Config"
 
 Vue.config.productionTip = false
 Vue.use(Vuex)
 
-config.default({
+config.override({
   LOCAL: false,
   DEVOPS: false,
   DEVOPS_DEVELOP: false,
