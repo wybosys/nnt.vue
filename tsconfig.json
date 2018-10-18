@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "baseUrl": "src",
+    "outDir": "bin",
     "target": "es5",
     "sourceMap": true,
     "allowSyntheticDefaultImports": true,
