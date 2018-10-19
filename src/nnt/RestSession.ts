@@ -154,7 +154,26 @@ class _RestSession extends SObject {
     };
     work(ms, 0);
   }
-
 }
 
 export var RestSession: IRestSession = new _RestSession();
+
+export function Get<T>(m: T): Promise<T> {
+  return new Promise<T>(resolve => {
+    RestSession.fetch(<any>m, () => {
+      resolve(m);
+    }, null, () => {
+      resolve(null);
+    });
+  });
+}
+
+export function Fetch<T>(m: T): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    RestSession.fetch(<any>m, () => {
+      resolve(m);
+    }, null, err => {
+      reject(new Error());
+    });
+  });
+}
