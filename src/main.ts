@@ -9,16 +9,6 @@ import {config} from "./nnt/Config"
 Vue.config.productionTip = false
 Vue.use(Vuex)
 
-config.override({
-  LOCAL: false,
-  DEVOPS: false,
-  DEVOPS_DEVELOP: false,
-  DEVOPS_RELEASE: false,
-  DEBUG: false,
-  DEVELOP: false,
-  PUBLISH: false,
-  DISTRIBUTION: false
-})
 config.host(/localhost/, {
   LOCAL: true,
   DEBUG: true,

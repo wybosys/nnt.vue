@@ -33,10 +33,14 @@ export default {
     actStart() {
       if (!this.recorder)
         return;
+      this.recorder.start();
     },
     actStop() {
       if (!this.recorder)
         return;
+      this.recorder.stop(media => {
+        console.log(media);
+      });
     }
   }
 }

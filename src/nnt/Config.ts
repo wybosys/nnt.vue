@@ -38,3 +38,16 @@ class _Config {
 }
 
 export let config = new _Config();
+
+config.override({
+  LOCAL: false,
+  DEVOPS: false,
+  DEVOPS_DEVELOP: false,
+  DEVOPS_RELEASE: false,
+  DEBUG: false,
+  DEVELOP: false,
+  PUBLISH: false,
+  DISTRIBUTION: false,
+  HOST: "<APIHOST>",
+  THIRDLIBS: "static/3rd/"
+})
