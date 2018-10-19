@@ -17,7 +17,7 @@ export class AudioRecorder {
       return;
     }
 
-    if (typeof AudioContext != "undefined") {
+    if (typeof AudioContext == "undefined") {
       AudioRecorder._VALID = false;
       cb(false);
       return;
