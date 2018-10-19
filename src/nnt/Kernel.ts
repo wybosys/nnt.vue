@@ -4,6 +4,8 @@ import {Invoke1} from "./Typescript";
 import {printf} from "./Compat";
 import {Signals} from "./Signals";
 
+export type IndexedObject = { [key: string]: any };
+
 // 默认的时间单位，秒
 export type Interval = number;
 

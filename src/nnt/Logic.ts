@@ -1,4 +1,15 @@
-import {ArrayT, asString, DateTime, Delay, MultiMap, StringT, toFloat, toInt, toJsonObject} from "./Kernel";
+import {
+  ArrayT,
+  asString,
+  DateTime,
+  Delay,
+  IndexedObject,
+  MultiMap,
+  StringT,
+  toFloat,
+  toInt,
+  toJsonObject
+} from "./Kernel";
 import {KvObject} from "./Stl";
 import {Model} from "./ApiModel";
 import {WebSocketConnector} from "./SocketSession";
@@ -7,7 +18,6 @@ import {UniqueId} from "./Application";
 type Class<T> = { new(...args: any[]): T, [key: string]: any };
 type AnyClass = Class<any>;
 type clazz_type = AnyClass | string;
-type IndexedObject = { [key: string]: any };
 
 interface FieldOption {
   // 唯一序号，后续类似pb的协议会使用id来做数据版本兼容
