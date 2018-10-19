@@ -9,6 +9,7 @@ import {
   SignalOpen, SignalTimeout
 } from "./Signals";
 import {KvObject} from "./Stl";
+import {Media} from "./Media";
 
 export enum HttpMethod {
   GET,
@@ -127,6 +128,10 @@ export class HttpConnector extends CHttpConnector {
           hasfile = true;
           break;
         }
+        if (v instanceof Media) {
+          hasfile = true;
+          break;
+        }
       }
       // 有文件必须走post
       if (hasfile)
@@ -140,13 +145,15 @@ export class HttpConnector extends CHttpConnector {
     else {
       this._imp.open('POST', this.url);
       if (hasfile) {
-        this._imp.setRequestHeader("Content-Type", "multipart/form-data");
         let form = new FormData();
-        for (let k in this.fields)
-          form.append(k, this.fields[k]);
+        for (let k in this.fields) {
+          let v = this.fields[k];
+          if (v instanceof Media)
+            v = v.save();
+          form.append(k, v);
+        }
         this._imp.send(form);
       } else {
-        this._imp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
         let d = UrlT.MapToField(this.fields);
         this._imp.send(d);
       }

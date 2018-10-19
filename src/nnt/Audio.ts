@@ -1,4 +1,4 @@
-import {DataMedia, IMedia} from "./Media";
+import {DataMedia, Media} from "./Media";
 import {StartService, WorkerFromString} from "./Worker";
 import {config} from "./Config";
 
@@ -66,7 +66,7 @@ export class AudioRecorder {
   }
 
   // 结束录音或者结束回放
-  stop(cb?: (media?: IMedia) => void) {
+  stop(cb?: (media?: Media) => void) {
     if (RECORDING) {
       this._cbStopped = cb;
 
@@ -163,13 +163,13 @@ export class AudioRecorder {
     cb && cb(null);
   }
 
-  private _cbStopped: (media: IMedia) => void;
+  private _cbStopped: (media: Media) => void;
 
   // 保存时使用的参数
   sampleRate: number;
   bitRate: number;
 
-  protected doStop(cb: (media: IMedia) => void) {
+  protected doStop(cb: (media: Media) => void) {
     // 从服务器上启动mp3编码服务
     StartService(config.THIRDLIBS + "/mp3encoder.js", worker => {
       if (!worker) {

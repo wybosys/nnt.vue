@@ -6,6 +6,7 @@ export class Model extends Base {
   constructor() {
     super();
     this.host = config.get('HOST');
+    this.withCredentials = false;
   }
 
   iscross(): boolean {
@@ -15,6 +16,8 @@ export class Model extends Base {
   domain: string;
 
   url(): string {
-    return this.host + "?action=" + this.action;
+    if (config.get('LOCAL'))
+      return this.host + "?action=" + this.action;
+    return this.host + this.domain + "/?action=" + this.action;
   }
 }
