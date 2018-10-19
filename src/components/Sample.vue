@@ -1,13 +1,18 @@
 <template>
-  <echo></echo>
+  <div>
+    <echo></echo>
+    <audio-recorder></audio-recorder>
+  </div>
 </template>
 
-<script>
-import Echo from "./Echo";
+<script lang="ts">
+
+import Echo from "./Echo.vue";
+import AudioRecorder from "./AudioRecorder.vue";
 
 export default {
   name: "Sample",
-  components: {Echo}
+  components: {Echo, AudioRecorder}
 }
 </script>
 
