@@ -1,6 +1,6 @@
 var __PROTO: any = Date.prototype;
-__PROTO.pattern = function (fmt) {
-  var o = {
+__PROTO.pattern = function (fmt: string) {
+  var o: any = {
     "M+": this.getMonth() + 1,
     "d+": this.getDate(),
     "h+": this.getHours() % 12 == 0 ? 12 : this.getHours() % 12,
@@ -10,7 +10,7 @@ __PROTO.pattern = function (fmt) {
     "q+": Math.floor((this.getMonth() + 3) / 3),
     "S": this.getMilliseconds()
   };
-  var week = {
+  var week: any = {
     "0": "/u65e5",
     "1": "/u4e00",
     "2": "/u4e8c",
@@ -33,7 +33,7 @@ __PROTO.pattern = function (fmt) {
   return fmt;
 };
 
-export var HashKey = function (o) {
+export var HashKey = function (o: any) {
   if (o == null)
     return null;
   var tp = typeof(o);
@@ -44,7 +44,7 @@ export var HashKey = function (o) {
   return o.toString();
 };
 
-function str_repeat(i, m) {
+function str_repeat(i: number, m: number) {
   for (var o = []; m > 0; o[--m] = i) ;
   return o.join('');
 }
@@ -52,7 +52,7 @@ function str_repeat(i, m) {
 export var printf = function () {
   var i = 0, a;
   var f = arguments[i++];
-  var o = [], m, p, c, x, s = '';
+  var o: any[] = [], m: any, p: any, c: any, x: any, s = '';
   while (f) {
     if ((m = /^[^\x25]+/.exec(f))) {
       o.push(m[0]);
@@ -121,7 +121,7 @@ export var guid = function () {
   return (S4() + S4() + "-" + S4() + "-" + S4() + "-" + S4() + "-" + S4() + S4() + S4());
 }
 
-export var uuid = function (len, radix) {
+export var uuid = function (len: number, radix: number) {
   var chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');
   var uuid = [], i;
   radix = radix || chars.length;

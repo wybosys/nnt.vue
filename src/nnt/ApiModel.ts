@@ -7,8 +7,7 @@ import {
   IndexedMap,
   Interval,
   ISerializable,
-  MapT,
-  Memcache,
+  Memcache, ObjectT,
   SObject,
   UrlT
 } from "./Kernel";
@@ -39,7 +38,7 @@ export class Model extends SObject implements ISerializable, ICacheObject {
 
   dispose() {
     this.response = undefined;
-    MapT.Clear(this.params);
+    ObjectT.Clear(this.params);
     super.dispose();
   }
 
@@ -61,7 +60,7 @@ export class Model extends SObject implements ISerializable, ICacheObject {
     return this.host + '|' + this.action + '|' + JSON.stringify(this.paramsForCache());
   }
 
-  paramsForCache(): KvObject<string, string> {
+  paramsForCache(): KvObject<string> {
     return this.params;
   }
 
@@ -73,7 +72,7 @@ export class Model extends SObject implements ISerializable, ICacheObject {
   action: string = '';
 
   /** 参数 */
-  params = new KvObject<string, string>();
+  params = new KvObject<string>();
 
   /** 域 */
   host: string = '';
@@ -132,7 +131,7 @@ export class Model extends SObject implements ISerializable, ICacheObject {
   }
 
   /** 可用的参数 */
-  fields(): KvObject<string, string> {
+  fields(): KvObject<string> {
     return this.params;
   }
 
@@ -181,7 +180,7 @@ export class Model extends SObject implements ISerializable, ICacheObject {
     return this.url();
   }
 
-  protected fieldsForLog(): KvObject<string, string> {
+  protected fieldsForLog(): KvObject<string> {
     return this.fields();
   }
 
@@ -191,7 +190,7 @@ export class Model extends SObject implements ISerializable, ICacheObject {
     if (VERBOSE) {
       let str = this.urlForLog();
       let flds = this.fieldsForLog();
-      if (MapT.IsEmpty(flds) == false) {
+      if (ObjectT.IsEmpty(flds) == false) {
         str += ' >> ' + UrlT.MapToField(flds);
       }
       console.log("API " + this.action + " 请求 " + str);
@@ -401,9 +400,9 @@ export class PagedModel<ItemT> {
   }
 
   // 所有页面的对象
-  get allItems(): Array<ItemT> {
-    let r = [];
-    this._items.forEach((k: any, o: Array<ItemT>) => {
+  get allItems(): ItemT[] {
+    let r: ItemT[] = [];
+    this._items.forEach((k: any, o: ItemT[]) => {
       ArrayT.PushObjects(r, o);
     });
     return r;

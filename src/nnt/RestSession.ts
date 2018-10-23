@@ -8,7 +8,7 @@ export class _CrossLoader {
   static completeCall: any = {};
 
   static process(m: Model) {
-    _CrossLoader.completeCall["call_" + _CrossLoader._regID] = (data) => {
+    _CrossLoader.completeCall["call_" + _CrossLoader._regID] = (data: any) => {
       let id = _CrossLoader._regID;
       m.__mdl_completed(data);
       delete _CrossLoader.completeCall["call_" + id];
@@ -28,14 +28,14 @@ export class _CrossLoader {
 export interface IRestSession extends ISObject {
   SID: string;
 
-  post(m: Model, cb?: (s?: Slot) => void, cbctx?: any);
+  post(m: Model, cb?: (s?: Slot) => void, cbctx?: any): void;
 
   fetch(m: Model,
         cbsuc?: (s?: Slot) => void, cbctx?: any,
-        cbfail?: (s?: Slot) => void, cbend?: () => void);
+        cbfail?: (s?: Slot) => void, cbend?: () => void): void;
 
   fetchs(ms: Array<Model>,
-         cbsuc?: (ss?: Array<Slot>) => void, cbctx?: any);
+         cbsuc?: (ss?: Array<Slot>) => void, cbctx?: any): void;
 }
 
 class _RestSession extends SObject {
@@ -140,7 +140,7 @@ class _RestSession extends SObject {
   /** 批量调用一堆接口，返回和调用的顺序保持一致 */
   fetchs(ms: Array<Model>,
          cbsuc?: (ss?: Array<Slot>) => void, cbctx?: any) {
-    let ss = [];
+    let ss: any[] = [];
     let work = (ms: Array<Model>, idx: number) => {
       if (idx == ms.length) {
         cbsuc.call(cbctx, ss);

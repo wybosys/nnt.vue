@@ -1,10 +1,14 @@
 /** 序列化的接口 */
-import {CMap, CSet, KvObject, MapType, SetType} from "./Stl";
+import {CMap, CSet, KvObject, SetType} from "./Stl";
 import {Invoke1} from "./Typescript";
 import {printf} from "./Compat";
 import {Signals} from "./Signals";
 
-export type IndexedObject = { [key: string]: any };
+export type IndexedKeyType = string | number | boolean;
+export type IndexedObject = {
+  [key: string]: any
+  [key: number]: any
+};
 
 // 默认的时间单位，秒
 export type Interval = number;
@@ -127,7 +131,7 @@ export function asString(o: any, def = ''): string {
 }
 
 /** 转换到json字串 */
-export function toJson(o: any, def = null): string {
+export function toJson(o: any, def: string = null): string {
   let t = typeof(o);
   if (t == 'string')
     return o;
@@ -142,7 +146,7 @@ export function toJson(o: any, def = null): string {
 }
 
 /** 转换到对象 */
-export function toJsonObject(o: jsonobj, def = null): Object {
+export function toJsonObject(o: jsonobj, def: string = null): Object {
   let t = typeof(o);
   if (t == 'string')
     return JSON.parse(<string>o);
@@ -684,6 +688,167 @@ export class DateTime {
 
 /** 提供操作基础对象的工具函数 */
 export class ObjectT {
+
+  /** 获取 */
+  static Get<V>(m: KvObject<V>, k: IndexedKeyType): V {
+    let a = Object();
+    return m[<any>k];
+  }
+
+  /** 获取所有的value */
+  static GetValues<V>(m: KvObject<V>): Array<V> {
+    let r: any[] = [];
+    this.Foreach(m, (k, v) => {
+      r.push(v);
+    });
+    return r;
+  }
+
+  /** 增加 */
+  static Add<V>(m: KvObject<V>, k: IndexedKeyType, v: V) {
+    m[<any>k] = v;
+  }
+
+  /** 遍历 */
+  static Foreach<V>(m: KvObject<V>, fun: (k: IndexedKeyType, v: V) => void, ctx?: any) {
+    let keys = Object.keys(m);
+    keys.forEach((k: any) => {
+      fun.call(ctx, k, m[k]);
+    }, this);
+  }
+
+  /** 转换 */
+  static ToArray<V, T>(m: KvObject<V>, fun: (k: IndexedKeyType, v: V) => T, ctx?: any): Array<T> {
+    let r: any[] = [];
+    let keys = Object.keys(m);
+    keys.forEach((k: any) => {
+      let obj = fun.call(ctx, k, m[k]);
+      r.push(obj);
+    }, this);
+    return r;
+  }
+
+  static SafeToArray<V, T>(m: KvObject<V>, fun: (k: IndexedKeyType, v: V) => T, ctx?: any): Array<T> {
+    let r: any[] = [];
+    let keys = Object.keys(m);
+    keys.forEach((k: any) => {
+      let obj = fun.call(ctx, k, m[k]);
+      if (obj)
+        r.push(obj);
+    }, this);
+    return r;
+  }
+
+  /** 取值 */
+  static QueryObject<V>(m: KvObject<V>, fun: (k: IndexedKeyType, v: V) => boolean, ctx?: any): [IndexedKeyType, V] {
+    let keys = Object.keys(m);
+    for (let i = 0; i < keys.length; ++i) {
+      let k = keys[i];
+      if (fun.call(ctx, k, m[k]))
+        return [<any>k, m[k]];
+    }
+    return null;
+  }
+
+  static QueryObjects<V>(m: KvObject<V>, fun: (k: IndexedKeyType, v: V) => boolean, ctx?: any): KvObject<V> {
+    let keys = Object.keys(m);
+    let r: any = {};
+    keys.forEach((k) => {
+      let v = m[k];
+      if (fun.call(ctx, k, v))
+        r[k] = v;
+    });
+    return r;
+  }
+
+  /** 获取值 */
+  static QueryValue<V>(m: KvObject<V>, fun: (k: IndexedKeyType, v: V) => boolean, ctx?: any): V {
+    let fnd = this.QueryObject(m, fun, ctx);
+    return fnd ? fnd[1] : null;
+  }
+
+  static QueryValues<V>(m: KvObject<V>, fun: (k: IndexedKeyType, v: V) => boolean, ctx?: any): V[] {
+    let keys = Object.keys(m);
+    let r: any = [];
+    keys.forEach((k) => {
+      let v = m[k];
+      if (fun.call(ctx, k, v))
+        r.push(v);
+    });
+    return r;
+  }
+
+  static QueryKey<V>(m: KvObject<V>, fun: (k: IndexedKeyType, v: V) => boolean, ctx?: any): IndexedKeyType {
+    let fnd = this.QueryObject(m, fun, ctx);
+    return fnd ? fnd[0] : null;
+  }
+
+  static QueryKeys<V>(m: KvObject<V>, fun: (k: IndexedKeyType, v: V) => boolean, ctx?: any): IndexedKeyType[] {
+    let keys = Object.keys(m);
+    let r: any = [];
+    keys.forEach((k) => {
+      let v = m[k];
+      if (fun.call(ctx, k, v))
+        r.push(k);
+    });
+    return r;
+  }
+
+  /** 判断是否为空 */
+  static IsEmpty<V>(m: KvObject<V>): boolean {
+    if (m == null)
+      return true;
+    return Object.keys(m).length == 0;
+  }
+
+  /** 删除key的元素 */
+  static RemoveKey<V>(m: KvObject<V>, k: IndexedKeyType) {
+    delete m[<any>k];
+  }
+
+  /** 清空 */
+  static Clear<V>(m: KvObject<V>, cb?: (k: IndexedKeyType, o: V) => void, ctx?: any) {
+    this.Foreach(m, (k: IndexedKeyType, v: V) => {
+      if (cb)
+        cb.call(ctx, k, v);
+      delete m[<any>k];
+    }, this);
+  }
+
+  /** 合并 */
+  static Concat<V>(l: KvObject<V>, r: KvObject<V>) {
+    if (l == null)
+      return r;
+    if (r == null)
+      return l;
+    this.Foreach(r, (k, v) => {
+      l[<any>k] = v;
+    }, this);
+  }
+
+  /** 复制 */
+  static Clone<V>(l: KvObject<V>): KvObject<V> {
+    let r = new KvObject<V>();
+    this.Foreach(l, (k: any, v) => {
+      r[k] = v;
+    }, this);
+    return r;
+  }
+
+  /** 获取长度 */
+  static Length<T>(m: T): number {
+    return Object.keys(m).length;
+  }
+
+  /** 转换成普通Object */
+  static Simplify<V>(m: KvObject<V>): IndexedObject {
+    let obj: IndexedObject = {};
+    this.Foreach(m, (k, v) => {
+      obj[<any>k] = <any>v;
+    });
+    return obj;
+  }
+
   /** 比较两个实例是否相等
    @brief 优先使用比较函数的结果
    */
@@ -820,7 +985,7 @@ export class ArrayT {
 
   /** 合并所有的数组 */
   static Merge<T>(...arr: Array<Array<T>>): T[] {
-    let r = [];
+    let r: any[] = [];
     arr.forEach((arr: Array<T>) => {
       r = r.concat(arr);
     });
@@ -865,7 +1030,7 @@ export class ArrayT {
 
   /** 查找所有符合条件的对象 */
   static QueryObjects<T>(arr: T[], fun: (o: T, idx: number) => boolean, ctx?: any): T[] {
-    let r = [];
+    let r: any[] = [];
     arr.forEach((o: T, idx: number) => {
       if (fun.call(ctx, o, idx))
         r.push(o);
@@ -916,7 +1081,7 @@ export class ArrayT {
   }
 
   /** 覆盖数组 */
-  static TrustSet<T>(arr: T[], tgt: T[], def = null) {
+  static TrustSet<T>(arr: T[], tgt: T[], def: T = null) {
     for (let i = 0; i < arr.length; ++i) {
       let o = tgt[i];
       arr[i] = o ? o : def;
@@ -924,7 +1089,7 @@ export class ArrayT {
   }
 
   /** 弹出数据 */
-  static TrustPop<T>(arr: T[], tgt: T[], def = null) {
+  static TrustPop<T>(arr: T[], tgt: T[], def: T = null) {
     for (let i = 0; i < arr.length; ++i) {
       let o = this.RemoveObjectAtIndex(tgt, 0);
       arr[i] = o ? o : def;
@@ -1086,7 +1251,7 @@ export class ArrayT {
   }
 
   static RemoveObjectsByFilter<T>(arr: T[], filter: (o: T, idx: number) => boolean, ctx?: any): T[] {
-    let r = [];
+    let r: any[] = [];
     let res = arr.filter((o, idx): boolean => {
       if (filter.call(ctx, o, idx)) {
         r.push(o);
@@ -1110,7 +1275,7 @@ export class ArrayT {
 
   /** 使用位于另一个 array 中对应下标的元素 */
   static RemoveObjectsInIndexArray<T>(arr: T[], r: number[]): T[] {
-    let rm = [];
+    let rm: any[] = [];
     let res = arr.filter((each: T, idx: number): boolean => {
       if (ArrayT.Contains(r, idx) == true) {
         rm.push(each);
@@ -1137,8 +1302,8 @@ export class ArrayT {
 
   /** 上浮满足需求的对象 */
   static Rise<T>(arr: T[], q: (e: T) => boolean) {
-    let r = [];
-    let n = [];
+    let r: any[] = [];
+    let n: any[] = [];
     arr.forEach((e: T) => {
       if (q(e))
         r.push(e);
@@ -1150,8 +1315,8 @@ export class ArrayT {
 
   /** 下沉满足需求的对象 */
   static Sink<T>(arr: T[], q: (e: T) => boolean) {
-    let r = [];
-    let n = [];
+    let r: any[] = [];
+    let n: any[] = [];
     arr.forEach((e: T) => {
       if (q(e))
         r.push(e);
@@ -1176,7 +1341,7 @@ export class ArrayT {
 
   /** 转换 */
   static Convert<L, R>(arr: L[], convert: (o: L, idx?: number) => R, ctx?: any): R[] {
-    let r = [];
+    let r: any[] = [];
     arr.forEach((o: L, idx: number) => {
       r.push(convert.call(ctx, o, idx));
     });
@@ -1185,7 +1350,7 @@ export class ArrayT {
 
   /** 安全转换，如果结果为null，则跳过 */
   static SafeConvert<L, R>(arr: L[], convert: (o: L, idx?: number) => R, ctx?: any): R[] {
-    let r = [];
+    let r: any[] = [];
     arr.forEach((o: L, idx: number) => {
       let t = convert.call(ctx, o, idx);
       if (t)
@@ -1196,7 +1361,7 @@ export class ArrayT {
 
   /** 提取 */
   static Filter<L, R>(arr: L[], filter: (o: L, idx?: number) => R, ctx?: any): R[] {
-    let r = [];
+    let r: any[] = [];
     arr.forEach((o: L, idx: number) => {
       let r = filter.call(ctx, o, idx);
       if (r)
@@ -1260,9 +1425,9 @@ export class ArrayT {
 
   /** 去重 */
   static HashUnique<T>(arr: T[], hash: boolean = true) {
-    let t = [];
+    let t: any[] = [];
     if (hash) {
-      let h = {};
+      let h: IndexedObject = {};
       arr.forEach((o: any) => {
         let k = o.hashCode;
         if (h[k])
@@ -1281,7 +1446,7 @@ export class ArrayT {
   }
 
   static Unique<T>(arr: T[], eqfun?: (l: T, o: T) => boolean, eqctx?: any) {
-    let t = [];
+    let t: any[] = [];
     arr.forEach((o: any) => {
       if (this.Contains(t, o, eqfun, eqctx) == false)
         t.push(o);
@@ -1394,169 +1559,6 @@ export class SetT {
   }
 }
 
-/** map 的工具类 */
-export class MapT {
-  /** 获取 */
-  static Get<K, V>(m: MapType<K, V>, k: K): V {
-    return m[<any>k];
-  }
-
-  /** 获取所有的value */
-  static GetValues<K, V>(m: MapType<K, V>): Array<V> {
-    let r = [];
-    this.Foreach(m, (k, v) => {
-      r.push(v);
-    });
-    return r;
-  }
-
-  /** 增加 */
-  static Add<K, V>(m: MapType<K, V>, k: K, v: V) {
-    m[<any>k] = v;
-  }
-
-  /** 遍历 */
-  static Foreach<K, V>(m: MapType<K, V>, fun: (k: K, v: V) => void, ctx?: any) {
-    let keys = Object.keys(m);
-    keys.forEach((k: any) => {
-      fun.call(ctx, k, m[k]);
-    }, this);
-  }
-
-  /** 转换 */
-  static ToArray<K, V, T>(m: MapType<K, V>, fun: (k: string, v: V) => T, ctx?: any): Array<T> {
-    let r = [];
-    let keys = Object.keys(m);
-    keys.forEach((k: any) => {
-      let obj = fun.call(ctx, k, m[k]);
-      r.push(obj);
-    }, this);
-    return r;
-  }
-
-  static SafeToArray<K, V, T>(m: MapType<K, V>, fun: (k: string, v: V) => T, ctx?: any): Array<T> {
-    let r = [];
-    let keys = Object.keys(m);
-    keys.forEach((k: any) => {
-      let obj = fun.call(ctx, k, m[k]);
-      if (obj)
-        r.push(obj);
-    }, this);
-    return r;
-  }
-
-  /** 取值 */
-  static QueryObject<K, V>(m: MapType<K, V>, fun: (k: K, v: V) => boolean, ctx?: any): [K, V] {
-    let keys = Object.keys(m);
-    for (let i = 0; i < keys.length; ++i) {
-      let k = keys[i];
-      if (fun.call(ctx, k, m[k]))
-        return [<any>k, m[k]];
-    }
-    return null;
-  }
-
-  static QueryObjects<K, V>(m: MapType<K, V>, fun: (k: K, v: V) => boolean, ctx?: any): MapType<K, V> {
-    let keys = Object.keys(m);
-    let r: any = {};
-    keys.forEach((k) => {
-      let v = m[k];
-      if (fun.call(ctx, k, v))
-        r[k] = v;
-    });
-    return r;
-  }
-
-  /** 获取值 */
-  static QueryValue<K, V>(m: MapType<K, V>, fun: (k: K, v: V) => boolean, ctx?: any): V {
-    let fnd = this.QueryObject(m, fun, ctx);
-    return fnd ? fnd[1] : null;
-  }
-
-  static QueryValues<K, V>(m: MapType<K, V>, fun: (k: K, v: V) => boolean, ctx?: any): V[] {
-    let keys = Object.keys(m);
-    let r: any = [];
-    keys.forEach((k) => {
-      let v = m[k];
-      if (fun.call(ctx, k, v))
-        r.push(v);
-    });
-    return r;
-  }
-
-  static QueryKey<K, V>(m: MapType<K, V>, fun: (k: K, v: V) => boolean, ctx?: any): K {
-    let fnd = this.QueryObject(m, fun, ctx);
-    return fnd ? fnd[0] : null;
-  }
-
-  static QueryKeys<K, V>(m: MapType<K, V>, fun: (k: K, v: V) => boolean, ctx?: any): K[] {
-    let keys = Object.keys(m);
-    let r: any = [];
-    keys.forEach((k) => {
-      let v = m[k];
-      if (fun.call(ctx, k, v))
-        r.push(k);
-    });
-    return r;
-  }
-
-  /** 判断是否为空 */
-  static IsEmpty<K, V>(m: MapType<K, V>): boolean {
-    if (m == null)
-      return true;
-    return Object.keys(m).length == 0;
-  }
-
-  /** 删除key的元素 */
-  static RemoveKey<K, V>(m: MapType<K, V>, k: K) {
-    delete m[<any>k];
-  }
-
-  /** 清空 */
-  static Clear<K, V>(m: MapType<K, V>, cb?: (k: K, o: V) => void, ctx?: any) {
-    MapT.Foreach(m, (k: K, v: V) => {
-      if (cb)
-        cb.call(ctx, k, v);
-      delete m[<any>k];
-    }, this);
-  }
-
-  /** 合并 */
-  static Concat(l: MapType<any, any>, r: MapType<any, any>) {
-    if (l == null)
-      return r;
-    if (r == null)
-      return l;
-    MapT.Foreach(r, (k, v) => {
-      l[k] = v;
-    }, this);
-  }
-
-  /** 复制 */
-  static Clone<K, V>(l: MapType<K, V>): MapType<K, V> {
-    let r = new KvObject<K, V>();
-    MapT.Foreach(l, (k: any, v) => {
-      r[k] = v;
-    }, this);
-    return r;
-  }
-
-  /** 获取长度 */
-  static Length<T>(m: T): number {
-    return Object.keys(m).length;
-  }
-
-  /** 转换成普通Object */
-  static Simplify<K, V>(m: MapType<K, V>): Object {
-    let obj = {};
-    this.Foreach(m, (k, v) => {
-      obj[<any>k] = <any>v;
-    });
-    return obj;
-  }
-}
-
-/** 使用索引的 map，可以按照顺序来获取元素 */
 export class IndexedMap<K, T> {
   constructor() {
   }
@@ -1666,7 +1668,7 @@ export class IndexedMap<K, T> {
     return this._vals;
   }
 
-  private _map = {};
+  private _map: IndexedObject = {};
   private _keys = new Array<K>();
   private _vals = new Array<T>();
 }
@@ -1786,7 +1788,7 @@ export class UrlT {
     }
   }
 
-  fields = new KvObject<string, string>();
+  fields = new KvObject<string>();
   domain = '';
 
   toString(): string {
@@ -1796,16 +1798,16 @@ export class UrlT {
         r += 'http://';
       r += this.domain;
       if (this.domain.indexOf('?') == -1 &&
-        !MapT.IsEmpty(this.fields))
+        !ObjectT.IsEmpty(this.fields))
         r += '?';
     }
     r += UrlT.MapToField(this.fields);
     return r;
   }
 
-  static MapToField(m: KvObject<any, any>): string {
-    let arr = [];
-    MapT.Foreach(m, (k, v) => {
+  static MapToField(m: KvObject<any>): string {
+    let arr: any[] = [];
+    ObjectT.Foreach(m, (k, v) => {
       arr.push(k + "=" + this.encode(v));
     }, this);
     return arr.join('&');
@@ -1882,7 +1884,7 @@ export interface ICacheRecord extends IReference {
   use(): any;
 
   /** 设置缓存的实际数据对象的属性，如果isnull跳过 */
-  prop(k: any, v: any);
+  prop(k: any, v: any): void;
 
   /** 是否为空 */
   isnull: boolean;
@@ -1923,7 +1925,7 @@ export class CacheRecord implements ICacheRecord {
 /** 基础缓存实现 */
 export class Memcache implements IShared {
   // 存储所有的对象，用来做带key的查找
-  protected _maps = new KvObject<any, CacheRecord>();
+  protected _maps = new KvObject<CacheRecord>();
   protected _records = new Array<CacheRecord>();
 
   // 是否启用
@@ -1989,7 +1991,7 @@ export class Memcache implements IShared {
 
   /** override 回调处理移除一个元素 */
   protected doRemoveObject(rcd: CacheRecord) {
-    MapT.RemoveKey(this._maps, rcd.key);
+    ObjectT.RemoveKey(this._maps, rcd.key);
   }
 
   static shared = new Memcache();
@@ -2060,9 +2062,9 @@ export class StringT {
   }
 
   /** 拆分，可以选择是否去空 */
-  static Split(str: string, sep: string, skipempty: boolean = true): Array<string> {
+  static Split(str: string, sep: string, skipempty: boolean = true): string[] {
     let r = str.split(sep);
-    let r0 = [];
+    let r0: any[] = [];
     r.forEach((e: string) => {
       if (e.length)
         r0.push(e);

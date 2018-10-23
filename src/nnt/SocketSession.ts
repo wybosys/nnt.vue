@@ -102,13 +102,13 @@ export interface ISocketSession extends ISObject {
   connector: CSocketConnector;
 
   // 监听模型
-  watch(mdl: Model, cb?: (s?: Slot) => void, cbctx?: any);
+  watch(mdl: Model, cb?: (s?: Slot) => void, cbctx?: any): void;
 
   // 取消监听模型
-  unwatch(mdl: Model);
+  unwatch(mdl: Model): void;
 
   // 获取模型数据
-  fetch(mdl: Model, cb?: (s?: Slot) => void, cbctx?: any, cbfail?: (s?: Slot) => void, cbend?: () => void);
+  fetch(mdl: Model, cb?: (s?: Slot) => void, cbctx?: any, cbfail?: (s?: Slot) => void, cbend?: () => void): void;
 
   // 服务器地址
   host: string;
@@ -117,7 +117,7 @@ export interface ISocketSession extends ISObject {
   SID: string;
 
   // 打开连接
-  open();
+  open(): void;
 }
 
 /**

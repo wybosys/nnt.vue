@@ -39,7 +39,7 @@ export class CHttpConnector extends SObject {
   url: string;
 
   /** fields */
-  fields: KvObject<string, any>;
+  fields: KvObject<any>;
 
   /** 获取的数据 */
   data: any;
@@ -52,7 +52,7 @@ export class CHttpConnector extends SObject {
   useCredentials() {
   }
 
-  fullUrl(fields?: KvObject<string, any>): string {
+  fullUrl(fields?: KvObject<any>): string {
     let r = this.url;
     if (!fields)
       fields = this.fields;
@@ -85,16 +85,16 @@ export abstract class CSocketConnector extends SObject {
   abstract isopened(): boolean;
 
   /** 连接服务器 */
-  abstract open();
+  abstract open(): void;
 
   /** 断开连接 */
-  abstract close();
+  abstract close(): void;
 
   /** 发送对象 */
-  abstract write(obj: any);
+  abstract write(obj: any): void;
 
   /** 监听对象 */
-  abstract watch(obj: any, on: boolean);
+  abstract watch(obj: any, on: boolean): void;
 }
 
 // network

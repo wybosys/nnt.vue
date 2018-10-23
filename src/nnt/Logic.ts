@@ -137,39 +137,39 @@ function Decode(mdl: any, params: any) {
     let val = params[key];
     if (fp.valtype) {
       if (fp.array) {
-        let arr = new Array();
+        let arr: any[] = [];
         if (val) {
           if (typeof(fp.valtype) == "string") {
             if (fp.valtype == string_t) {
-              val.forEach(e => {
+              val.forEach((e: any) => {
                 arr.push(e ? e.toString() : null);
               });
             }
             else if (fp.valtype == integer_t) {
-              val.forEach(e => {
+              val.forEach((e: any) => {
                 arr.push(e ? toInt(e) : 0);
               });
             }
             else if (fp.valtype == double_t) {
-              val.forEach(e => {
+              val.forEach((e: any) => {
                 arr.push(e ? toFloat(e) : 0);
               });
             }
             else if (fp.valtype == boolean_t) {
-              val.forEach(e => {
+              val.forEach((e: any) => {
                 arr.push(!!e);
               });
             }
           }
           else {
             if (fp.valtype == Object) {
-              val.forEach(e => {
+              val.forEach((e: any) => {
                 arr.push(e);
               });
             }
             else {
               let clz: any = fp.valtype;
-              val.forEach(e => {
+              val.forEach((e: any) => {
                 if (e == null) {
                   arr.push(null);
                 }
@@ -359,8 +359,8 @@ function Output(mdl: any): any {
         }
         else {
           // 特殊类型，需要迭代进去
-          let arr = new Array();
-          val && val.forEach(e => {
+          let arr: any[] = [];
+          val && val.forEach((e: any) => {
             arr.push(Output(e));
           });
           r[fk] = arr;
@@ -370,12 +370,12 @@ function Output(mdl: any): any {
         let m: IndexedObject = {};
         if (val) {
           if (typeof(fp.valtype) == "string") {
-            val.forEach((v, k) => {
+            val.forEach((v: any, k: any) => {
               m[k] = v;
             });
           }
           else {
-            val.forEach((v, k) => {
+            val.forEach((v: any, k: any) => {
               m[k] = Output(v);
             });
           }
@@ -386,12 +386,12 @@ function Output(mdl: any): any {
         let m: IndexedObject = {};
         if (val) {
           if (typeof(fp.valtype) == "string") {
-            val.forEach((v, k) => {
+            val.forEach((v: any, k: any) => {
               m[k] = v;
             });
           }
           else {
-            val.forEach((v, k) => {
+            val.forEach((v: any, k: any) => {
               m[k] = ArrayT.Convert(v, e => Output(e));
             });
           }
@@ -599,7 +599,7 @@ export abstract class Base extends Model {
     };
   }
 
-  fields(): KvObject<string, string> {
+  fields(): KvObject<string> {
     return Encode(this);
   }
 
@@ -691,7 +691,7 @@ export class SocketConnector extends WebSocketConnector {
   }
 
   write(d: Model) {
-    let params = {
+    let params: IndexedObject = {
       _cmid: d.hashCode,
       _sid: this.session.SID,
       _cid: UniqueId(),
@@ -706,7 +706,7 @@ export class SocketConnector extends WebSocketConnector {
   }
 
   watch(d: Model, on: boolean) {
-    let params = {
+    let params: IndexedObject = {
       _cmid: d.hashCode,
       _sid: this.session.SID,
       _cid: UniqueId(),

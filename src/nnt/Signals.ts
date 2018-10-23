@@ -1,6 +1,6 @@
 // 用于穿透整个emit流程的对象
 import {CSet, KvObject} from "./Stl";
-import {ArrayT, MapT, SetT} from "./Kernel";
+import {ArrayT, ObjectT, SetT} from "./Kernel";
 
 export class SlotTunnel {
   /** 是否请求中断了emit过程 */
@@ -254,7 +254,7 @@ export class Slots {
 }
 
 export interface SignalsDelegate {
-  _signalConnected(sig: string, s?: Slot);
+  _signalConnected(sig: string, s?: Slot): void;
 }
 
 export class Signals {
@@ -262,7 +262,7 @@ export class Signals {
     this.owner = owner;
   }
 
-  private _slots = new KvObject<string, Slots>();
+  private _slots = new KvObject<Slots>();
 
   // 信号的主体
   owner: any;
@@ -279,7 +279,7 @@ export class Signals {
     }, this);
 
     // 清理信号，不能直接用clear的原因是clear不会断开对于ower的引用
-    MapT.Clear(this._slots, (k: string, o: Slots) => {
+    ObjectT.Clear(this._slots, (k: string, o: Slots) => {
       if (o)
         o.dispose();
     });
@@ -297,7 +297,7 @@ export class Signals {
     }, this);
 
     // 清空slot的连接
-    MapT.Foreach(this._slots, (k: string, o: Slots) => {
+    ObjectT.Foreach(this._slots, (k: string, o: Slots) => {
       if (o)
         o.clear();
     });
@@ -305,7 +305,7 @@ export class Signals {
 
   toString(): string {
     let str = "";
-    MapT.Foreach(this._slots, (k, v) => {
+    ObjectT.Foreach(this._slots, (k, v) => {
       str += k + ": " + v + "\n";
     }, this);
     return str;
@@ -465,7 +465,7 @@ export class Signals {
     if (target == null)
       return;
 
-    MapT.Foreach(this._slots, (sig: string, ss: Slots) => {
+    ObjectT.Foreach(this._slots, (sig: string, ss: Slots) => {
       if (ss)
         ss.disconnect(null, target);
     }, this);
@@ -478,7 +478,7 @@ export class Signals {
   disconnect(sig: string, cb?: (e: Slot) => void, target?: any) {
     let ss = this._slots[sig];
     if (ss == null)
-      return null;
+      return;
 
     if (cb == null && target == null) {
       // 清除sig的所有插槽，自动断开反向引用
@@ -503,7 +503,7 @@ export class Signals {
   }
 
   isConnectedOfTarget(target: any): boolean {
-    return MapT.QueryObject(this._slots, (sig: string, ss: Slots): boolean => {
+    return ObjectT.QueryObject(this._slots, (sig: string, ss: Slots): boolean => {
       return ss ? ss.is_connected(target) : false;
     }, this) != null;
   }

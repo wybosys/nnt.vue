@@ -1,4 +1,4 @@
-import {asString, ICodec, IShared} from "./Kernel";
+import {asString, ICodec, IndexedObject, IShared} from "./Kernel";
 import {Closure} from "./Typescript";
 
 export let IMP_STORAGE_GET: (key: string) => string;
@@ -141,7 +141,7 @@ else if (_storageMode == 1) {
   };
 }
 else {
-  let __g_storage = {};
+  let __g_storage: IndexedObject = {};
   IMP_STORAGE_GET = (key: string): string => {
     return __g_storage[key];
   };

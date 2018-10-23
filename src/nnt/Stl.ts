@@ -1,12 +1,15 @@
 import {HashKey} from "./Compat";
 
-declare let Map;
-declare let Set;
+declare let Map: any;
+declare let Set: any
 export let ECMA6_NATIVE: boolean = true;
 if (typeof(Map) == 'undefined')
   ECMA6_NATIVE = false;
 
-export class KvObject<K, V> {
+export class KvObject<V> {
+  [key: string]: any
+
+  [key: number]: any
 }
 
 export class CMap<K, V> {
@@ -120,9 +123,9 @@ export class CSet<V> {
 
   private _i_add(o: V): boolean {
     let k = HashKey(o);
-    if (this._map[k] != undefined)
+    if (!this._map.has(k))
       return false;
-    this._map[k] = true;
+    this._map.set(k, o)
     this._arr.push(o);
     return true;
   }
@@ -135,7 +138,7 @@ export class CSet<V> {
 
   private _i_has(o: V): boolean {
     let k = HashKey(o);
-    return this._map[k] != undefined;
+    return this._map.has(k);
   }
 
   has: (o: V) => boolean = ECMA6_NATIVE ? this._n_has : this._i_has;
@@ -146,7 +149,7 @@ export class CSet<V> {
 
   private _i_delete(o: V): boolean {
     let k = HashKey(o);
-    if (this._map[k] == undefined)
+    if (!this._map.has(k))
       return false;
     this._map.delete(k);
     let idx = this._arr.indexOf(o);
@@ -193,5 +196,5 @@ export class CSet<V> {
   forEach: (cb: (o: V) => void, ctx?: any) => void = ECMA6_NATIVE ? this._n_foreach : this._i_foreach;
 }
 
-export type MapType<K, V> = KvObject<K, V> | Object;
-export type SetType<V> = CSet<V>;// | Set<V>;
+export type MapType<V> = KvObject<V>;
+export type SetType<V> = CSet<V>;

@@ -1,17 +1,17 @@
-import {KvObject} from "./Stl";
+import {IndexedObject} from "./Kernel";
 
 class _Config {
   [key: string]: any;
 
   // 默认配置
-  override(cfg: KvObject<string, any>) {
+  override(cfg: IndexedObject) {
     for (let k in cfg) {
       this[k] = this._cur[k] = cfg[k];
     }
   }
 
   // 添加根据host判断得配置
-  host(host: RegExp, cfg: KvObject<string, any>) {
+  host(host: RegExp, cfg: IndexedObject) {
     if (!location.hostname.match(host))
       return;
     for (let k in cfg) {
@@ -34,7 +34,7 @@ class _Config {
     }
   }
 
-  private _cur: KvObject<string, any> = {};
+  private _cur: IndexedObject = {};
 }
 
 export let config = new _Config();

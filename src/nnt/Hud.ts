@@ -8,7 +8,7 @@ export class Hud {
     // 需要业务实现
   };
 
-  static Error = function (str) {
+  static Error = function (str: any) {
     alert(str);
   }
 }
