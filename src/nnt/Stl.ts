@@ -48,9 +48,9 @@ export class CMap<K, V> {
 
   private _i_foreach(cb: (v: V, k: K) => void, ctx?: any) {
     let ks = Object.keys(this._imp);
-    ks.forEach(function (k) {
+    ks.forEach(k => {
       cb.call(ctx, this._imp[k], k);
-    }, this);
+    });
   }
 
   forEach: (cb: (v: V, k: K) => void, ctx?: any) => void = ECMA6_NATIVE ? this._n_foreach : this._i_foreach;

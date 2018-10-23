@@ -154,7 +154,7 @@ export function toJsonObject(o: jsonobj, def = null): Object {
 /** 格式化字符串 */
 export function formatString(fmt: string, ...p: any[]): string {
   try {
-    return Invoke1(printf, this, p, fmt);
+    return Invoke1(printf, null, p, fmt);
   } catch (err) {
     console.exception('format: ' + fmt + '\nargus: ' + p + '\n' + err);
   }
@@ -163,7 +163,7 @@ export function formatString(fmt: string, ...p: any[]): string {
 
 export function formatStringV(fmt: string, p: any[]): string {
   try {
-    return Invoke1(printf, this, p, fmt);
+    return Invoke1(printf, null, p, fmt);
   } catch (err) {
     console.exception('format: ' + fmt + '\nargus: ' + p + '\n' + err);
   }
