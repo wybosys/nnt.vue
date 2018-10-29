@@ -162,8 +162,8 @@ export class Login extends ApiModel {
       @Model.string(1, [Model.input], "随便输入一个用户id")
       uid:string;
   
-      @Model.boolean(2, [Model.input, Model.optional], "用户的token")
-      token?:boolean;
+      @Model.string(2, [Model.input, Model.optional], "用户的token")
+      token?:string;
   
       @Model.string(3, [Model.output])
       sid:string;
