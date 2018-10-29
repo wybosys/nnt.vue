@@ -5,6 +5,7 @@ import Vuex from 'vuex'
 import App from './App.vue'
 import router from './router'
 import {config} from "./nnt/Config"
+import {SampleLogin} from "./app/framework-nntlogic-apis";
 
 Vue.config.productionTip = false
 Vue.use(Vuex)
@@ -23,3 +24,16 @@ new Vue({
   components: {App},
   template: '<App/>'
 })
+
+declare let sdks: any
+if (sdks) {
+  sdks.config.set('CHANNEL_ID', 1804)
+  sdks.config.set('GAME_ID', 100)
+  sdks.init().then(() => {
+    console.info("SDKS 初始化成功")
+    // 使用sdk的用户登录
+    sdks.userDetailInfo().then(info => {
+      let lg = SampleLogin();
+    });
+  });
+}
