@@ -196,6 +196,16 @@ export class LoginSDK extends ApiModel {
   
 }
 
+export class LoginVerifySDK extends ApiModel {
+  
+      @Model.string(1, [Model.input])
+      sid:string;
+  
+      @Model.type(2, User, [Model.output])
+      user:User;
+  
+}
+
 export class Message extends ApiModel {
   
       @Model.string(1, [Model.output], "消息体")
@@ -219,6 +229,8 @@ export let RSampleCallecho = ["sample.callecho", Echoo, ""];
 export let RSampleLogin = ["sample.login", Login, ""];
 
 export let RSampleLoginsdk = ["sample.loginsdk", LoginSDK, ""];
+
+export let RSampleLoginverifysdk = ["sample.loginverifysdk", LoginVerifySDK, ""];
 
 export let RSampleUser = ["sample.user", User, ""];
 
@@ -244,6 +256,10 @@ export function SampleLogin():Login {
 
 export function SampleLoginsdk():LoginSDK {
   return Model.NewRequest(RSampleLoginsdk);
+}
+
+export function SampleLoginverifysdk():LoginVerifySDK {
+  return Model.NewRequest(RSampleLoginverifysdk);
 }
 
 export function SampleUser():User {

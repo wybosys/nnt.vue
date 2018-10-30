@@ -5,8 +5,8 @@ import Vuex from 'vuex'
 import App from './App.vue'
 import router from './router'
 import {config} from "./nnt/Config"
-import {SampleLogin, SampleLoginsdk} from "./app/framework-nntlogic-apis";
-import {Get} from "./nnt/RestSession";
+import {SampleLogin, SampleLoginsdk, SampleLoginverifysdk} from "./app/framework-nntlogic-apis";
+import {Get, RestSession} from "./nnt/RestSession";
 
 Vue.config.productionTip = false
 Vue.use(Vuex)
@@ -38,7 +38,11 @@ if (sdks) {
       lg.raw = info.raw;
       lg.channel = info.channel;
       Get(lg).then(() => {
-        console.log("登录成功 " + lg.sid);
+        let lv = SampleLoginverifysdk();
+        lv.sid = lg.sid;
+        Get(lv).then(()=>{
+          console.log("登录成功 " + lv.user.uid);
+        });
       });
     });
   });
