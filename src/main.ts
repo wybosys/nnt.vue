@@ -5,7 +5,7 @@ import Vuex from 'vuex'
 import App from './App.vue'
 import router from './router'
 import {config} from "./nnt/Config"
-import {SampleLogin} from "./app/framework-nntlogic-apis";
+import {SampleLogin, SampleLoginsdk} from "./app/framework-nntlogic-apis";
 import {Get} from "./nnt/RestSession";
 
 Vue.config.productionTip = false
@@ -34,11 +34,11 @@ if (sdks) {
     console.info("SDKS 初始化成功")
     // 使用sdk的用户登录
     sdks.userDetailInfo().then(info => {
-      let lg = SampleLogin();
-      lg.uid = info.idU;
-      lg.token = info.token;
-      Get(lg).then(()=>{
-        console.log("登录成功");
+      let lg = SampleLoginsdk();
+      lg.raw = info.raw;
+      lg.channel = info.channel;
+      Get(lg).then(() => {
+        console.log("登录成功 " + lg.sid);
       });
     });
   });

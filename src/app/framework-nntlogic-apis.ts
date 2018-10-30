@@ -162,11 +162,14 @@ export class Login extends ApiModel {
       @Model.string(1, [Model.input], "随便输入一个用户id")
       uid:string;
   
-      @Model.string(2, [Model.input, Model.optional], "用户的token")
-      token?:string;
-  
-      @Model.string(3, [Model.output])
+      @Model.string(2, [Model.output])
       sid:string;
+  
+      @Model.string(3, [Model.input, Model.optional], "sdk返回的数据")
+      raw?:string;
+  
+      @Model.string(4, [Model.input, Model.optional], "渠道")
+      channel?:string;
   
 }
 
@@ -174,6 +177,22 @@ export class User extends ApiModel {
   
       @Model.string(1, [Model.output], "当前用户id")
       uid:string;
+  
+}
+
+export class LoginSDK extends ApiModel {
+  
+      @Model.string(1, [Model.input], "sdk返回的数据")
+      raw:string;
+  
+      @Model.string(2, [Model.input], "渠道")
+      channel:string;
+  
+      @Model.type(3, User, [Model.output])
+      user:User;
+  
+      @Model.string(4, [Model.output])
+      sid:string;
   
 }
 
@@ -199,6 +218,8 @@ export let RSampleCallecho = ["sample.callecho", Echoo, ""];
 
 export let RSampleLogin = ["sample.login", Login, ""];
 
+export let RSampleLoginsdk = ["sample.loginsdk", LoginSDK, ""];
+
 export let RSampleUser = ["sample.user", User, ""];
 
 export let RSampleMessage = ["sample.message", Message, "监听消息炸弹"];
@@ -219,6 +240,10 @@ export function SampleCallecho():Echoo {
 
 export function SampleLogin():Login {
   return Model.NewRequest(RSampleLogin);
+}
+
+export function SampleLoginsdk():LoginSDK {
+  return Model.NewRequest(RSampleLoginsdk);
 }
 
 export function SampleUser():User {
