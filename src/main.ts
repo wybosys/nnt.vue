@@ -1,15 +1,13 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
-import Vuex from 'vuex'
 import App from './App.vue'
 import router from './router'
 import {config} from "./nnt/Config"
-import {SampleLogin, SampleLoginsdk, SampleLoginverifysdk} from "./app/framework-nntlogic-apis";
-import {Get, RestSession} from "./nnt/RestSession";
+import {SampleLoginsdk, SampleLoginverifysdk} from "./app/framework-nntlogic-apis";
+import {Get} from "./nnt/RestSession";
 
 Vue.config.productionTip = false
-Vue.use(Vuex)
 
 config.host(/localhost/, {
   LOCAL: true,
@@ -40,7 +38,7 @@ if (sdks) {
       Get(lg).then(() => {
         let lv = SampleLoginverifysdk();
         lv.sid = lg.sid;
-        Get(lv).then(()=>{
+        Get(lv).then(() => {
           console.log("登录成功 " + lv.user.uid);
         });
       });
