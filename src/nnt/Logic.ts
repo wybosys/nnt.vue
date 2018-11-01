@@ -604,7 +604,7 @@ export abstract class Base extends Model {
   }
 
   unserialize(respn: any): boolean {
-    Decode(this, respn.data || {});
+    Decode(this, respn.data || respn.message || {});
     return true;
   }
 
@@ -613,7 +613,7 @@ export abstract class Base extends Model {
   }
 
   responseMessage(): string {
-    return this.response.data;
+    return this.response.data || this.response.message || '';
   }
 
   // 构造一个请求对象
