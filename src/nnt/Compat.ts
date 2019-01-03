@@ -143,91 +143,38 @@ export var uuid = function (len: number, radix: number) {
   return uuid.join('');
 }
 
-export function loadScripts(list, cb, ctx) {
-  var loaded = 0;
-  var loadNext = function () {
-    loadScript(list[loaded], function () {
-      loaded++;
-      if (loaded >= list.length) {
-        cb.call(ctx);
-      } else {
-        loadNext();
-      }
-    }, this);
-  };
-  loadNext();
+export function loadScript(src, async = true): Promise<void> {
+  return new Promise<void>(resolve => {
+    var s: any = document.createElement('script');
+    if (s.hasOwnProperty("async")) {
+      s.async = async
+    }
+    s.src = src;
+    var fun = function () {
+      this.removeEventListener('load', fun, false);
+      resolve();
+    };
+    s.addEventListener('load', fun, false);
+    s.addEventListener('error', fun, false);
+    document.body.appendChild(s);
+  });
 }
 
-export function loadScript(src, cb, ctx) {
-  var s: any = document.createElement('script');
-  if (s.hasOwnProperty("async")) {
-    s.async = false;
-  }
-  s.src = src;
-  var fun = function () {
-    this.removeEventListener('load', fun, false);
-    cb.call(ctx);
-  };
-  s.addEventListener('load', fun, false);
-  document.body.appendChild(s);
-}
-
-export function loadStyles(list, cb, ctx) {
-  var loaded = 0;
-  var loadNext = function () {
-    loadStyle(list[loaded], function () {
-      loaded++;
-      if (loaded >= list.length) {
-        cb.call(ctx);
-      } else {
-        loadNext();
-      }
-    }, this);
-  };
-  loadNext();
-}
-
-export function loadStyle(src, cb, ctx) {
-  var s: any = document.createElement('link');
-  if (s.hasOwnProperty("async")) {
-    s.async = false;
-  }
-  s.setAttribute("rel", "stylesheet");
-  s.setAttribute("type", "text/css");
-  s.setAttribute("href", src);
-  var fun = function () {
-    this.removeEventListener('load', fun, false);
-    cb.call(ctx);
-  };
-  s.addEventListener('load', fun, false);
-  document.body.appendChild(s);
-}
-
-export const enum SOURCETYPE {
-  JS = 0,
-  CSS = 1,
-}
-
-export function loadSources(list, cb, ctx) {
-  var loaded = 0;
-  var loadNext = function () {
-    loadSource(list[loaded], function () {
-      loaded++;
-      if (loaded >= list.length) {
-        cb.call(ctx);
-      } else {
-        loadNext();
-      }
-    }, this);
-  };
-  loadNext();
-}
-
-export function loadSource(src, cb, ctx) {
-  if (src[1] == 0)
-    loadScript(src[0], cb, ctx);
-  else if (src[1] == 1)
-    loadStyle(src[0], cb, ctx);
-  else
-    cb.call(ctx);
+export function loadStyle(src, async = true): Promise<void> {
+  return new Promise<void>(resolve => {
+    var s: any = document.createElement('link');
+    if (s.hasOwnProperty("async")) {
+      s.async = async;
+    }
+    s.setAttribute("rel", "stylesheet");
+    s.setAttribute("type", "text/css");
+    s.setAttribute("href", src);
+    var fun = function () {
+      this.removeEventListener('load', fun, false);
+      resolve();
+    };
+    s.addEventListener('load', fun, false);
+    s.addEventListener('error', fun, false);
+    document.body.appendChild(s);
+  });
 }
