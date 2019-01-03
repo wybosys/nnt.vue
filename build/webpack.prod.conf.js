@@ -17,7 +17,7 @@ const env = require('../config/prod.env')
 const webpackConfig = merge(baseWebpackConfig, {
   mode: 'production',
   entry: {
-    vendors: ['vue', 'vuex', 'vue-router'],
+    vendors: ['vue', 'vue-router'],
   },
   module: {
     rules: utils.styleLoaders({
