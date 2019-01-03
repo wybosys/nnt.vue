@@ -44,7 +44,10 @@ module.exports = {
         loader: 'ts-loader',
         include: [resolve('src')],
         options: {
-          appendTsSuffixTo: [/\.vue$/]
+            appendTsSuffixTo: [/\.vue$/],
+            compilerOptions: {
+              target: "es5"
+            }
         }
       },
       {
