@@ -36,7 +36,7 @@ __PROTO.pattern = function (fmt: string) {
 export var HashKey = function (o: any) {
   if (o == null)
     return null;
-  var tp = typeof(o);
+  var tp = typeof (o);
   if (tp == 'string' || tp == 'number' || tp == 'function')
     return o;
   if (o.hashCode)
@@ -56,16 +56,14 @@ export var printf = function () {
   while (f) {
     if ((m = /^[^\x25]+/.exec(f))) {
       o.push(m[0]);
-    }
-    else if ((m = /^\x25{2}/.exec(f))) {
+    } else if ((m = /^\x25{2}/.exec(f))) {
       o.push('%');
-    }
-    else if ((m = /^\x25(?:(\d+)\$)?(\+)?(0|'[^$])?(-)?(\d+)?(?:\.(\d+))?([b-fosuxX])/.exec(f))) {
+    } else if ((m = /^\x25(?:(\d+)\$)?(\+)?(0|'[^$])?(-)?(\d+)?(?:\.(\d+))?([b-fosuxX])/.exec(f))) {
       if (((a = arguments[m[1] || i++]) == null) || (a == undefined)) {
         throw('Too few arguments.');
       }
-      if (/[^s]/.test(m[7]) && (typeof(a) != 'number')) {
-        throw('Expecting number but found ' + typeof(a));
+      if (/[^s]/.test(m[7]) && (typeof (a) != 'number')) {
+        throw('Expecting number but found ' + typeof (a));
       }
       switch (m[7]) {
         case 'b':
@@ -104,8 +102,7 @@ export var printf = function () {
       x = m[5] - String(a).length - s.length;
       p = m[5] ? str_repeat(c, x) : '';
       o.push(s + (m[4] ? a + p : p + a));
-    }
-    else {
+    } else {
       throw('Huh ?!');
     }
     f = f.substring(m[0].length);
@@ -144,4 +141,93 @@ export var uuid = function (len: number, radix: number) {
     }
   }
   return uuid.join('');
+}
+
+export function loadScripts(list, cb, ctx) {
+  var loaded = 0;
+  var loadNext = function () {
+    loadScript(list[loaded], function () {
+      loaded++;
+      if (loaded >= list.length) {
+        cb.call(ctx);
+      } else {
+        loadNext();
+      }
+    }, this);
+  };
+  loadNext();
+}
+
+export function loadScript(src, cb, ctx) {
+  var s: any = document.createElement('script');
+  if (s.hasOwnProperty("async")) {
+    s.async = false;
+  }
+  s.src = src;
+  var fun = function () {
+    this.removeEventListener('load', fun, false);
+    cb.call(ctx);
+  };
+  s.addEventListener('load', fun, false);
+  document.body.appendChild(s);
+}
+
+export function loadStyles(list, cb, ctx) {
+  var loaded = 0;
+  var loadNext = function () {
+    loadStyle(list[loaded], function () {
+      loaded++;
+      if (loaded >= list.length) {
+        cb.call(ctx);
+      } else {
+        loadNext();
+      }
+    }, this);
+  };
+  loadNext();
+}
+
+export function loadStyle(src, cb, ctx) {
+  var s: any = document.createElement('link');
+  if (s.hasOwnProperty("async")) {
+    s.async = false;
+  }
+  s.setAttribute("rel", "stylesheet");
+  s.setAttribute("type", "text/css");
+  s.setAttribute("href", src);
+  var fun = function () {
+    this.removeEventListener('load', fun, false);
+    cb.call(ctx);
+  };
+  s.addEventListener('load', fun, false);
+  document.body.appendChild(s);
+}
+
+export const enum SOURCETYPE {
+  JS = 0,
+  CSS = 1,
+}
+
+export function loadSources(list, cb, ctx) {
+  var loaded = 0;
+  var loadNext = function () {
+    loadSource(list[loaded], function () {
+      loaded++;
+      if (loaded >= list.length) {
+        cb.call(ctx);
+      } else {
+        loadNext();
+      }
+    }, this);
+  };
+  loadNext();
+}
+
+export function loadSource(src, cb, ctx) {
+  if (src[1] == 0)
+    loadScript(src[0], cb, ctx);
+  else if (src[1] == 1)
+    loadStyle(src[0], cb, ctx);
+  else
+    cb.call(ctx);
 }
