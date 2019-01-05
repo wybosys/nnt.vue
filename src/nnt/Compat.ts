@@ -143,11 +143,11 @@ export var uuid = function (len: number, radix: number) {
   return uuid.join('');
 }
 
-export function loadScript(src, async = true): Promise<void> {
+export function loadScript(src: string): Promise<void> {
   return new Promise<void>(resolve => {
     var s: any = document.createElement('script');
     if (s.hasOwnProperty("async")) {
-      s.async = async
+      s.async = true;
     }
     s.src = src;
     var fun = function () {
@@ -160,11 +160,11 @@ export function loadScript(src, async = true): Promise<void> {
   });
 }
 
-export function loadStyle(src, async = true): Promise<void> {
+export function loadStyle(src: string): Promise<void> {
   return new Promise<void>(resolve => {
     var s: any = document.createElement('link');
     if (s.hasOwnProperty("async")) {
-      s.async = async;
+      s.async = true;
     }
     s.setAttribute("rel", "stylesheet");
     s.setAttribute("type", "text/css");
@@ -177,4 +177,8 @@ export function loadStyle(src, async = true): Promise<void> {
     s.addEventListener('error', fun, false);
     document.body.appendChild(s);
   });
+}
+
+if (typeof console.exception == "undefined") {
+  console.exception = console.error;
 }
