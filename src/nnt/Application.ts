@@ -81,4 +81,24 @@ export class Application {
     opts.components[this.template] = this.app;
     new Vue(opts);
   }
+
+  // 加载一个插件
+  loadPlugin(plugin: any, name: string) {
+    try {
+      Vue.use(plugin);
+    } catch (e) {
+      // pass
+    }
+    Vue.prototype['$' + name] = plugin;
+  }
+
+  // 推入页面
+  push(location: string) {
+    this.router.push(location);
+  }
+
+  // 回上一个
+  goback() {
+    this.router.back();
+  }
 }
