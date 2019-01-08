@@ -70,12 +70,15 @@ export class Application {
     opts.components[this.template] = this.app;
     new Vue(opts);
 
-    // 启动console
-    if (config.get('VCONSOLE')) {
-      loadScript('https://cdn.bootcss.com/vConsole/3.2.0/vconsole.min.js').then(() => {
-        alert();
-        new vConsole();
-      });
+    // 开发模式
+    if (config.get('DEVELOP')) {
+      // 启动console
+      if (config.get('VCONSOLE')) {
+        loadScript('https://cdn.bootcss.com/vConsole/3.2.0/vconsole.min.js').then(() => {
+          alert();
+          new vConsole();
+        });
+      }
     }
   }
 }
