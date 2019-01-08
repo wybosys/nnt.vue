@@ -4,6 +4,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import {IndexedObject} from "./Kernel";
 import {config} from "./Config";
+import "babel-polyfill";
 
 Vue.config.productionTip = false
 declare let VConsole: any;
