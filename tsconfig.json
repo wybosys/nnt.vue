@@ -4,6 +4,7 @@
     "outDir": "bin",
     "target": "es5",
     "sourceMap": true,
+    "removeComments": true,
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
     "moduleResolution": "node",
