@@ -44,10 +44,10 @@ module.exports = {
         loader: 'ts-loader',
         include: [resolve('src')],
         options: {
-            appendTsSuffixTo: [/\.vue$/],
-            compilerOptions: {
-              target: "es5"
-            }
+          appendTsSuffixTo: [/\.vue$/],
+          compilerOptions: {
+            target: "es5"
+          }
         }
       },
       {
@@ -73,6 +73,10 @@ module.exports = {
           limit: 10000,
           name: utils.assetsPath('fonts/[name].[hash:7].[ext]')
         }
+      },
+      {
+        test: /\.sass$/,
+        loaders: ['style', 'css', 'sass']
       }
     ]
   },
