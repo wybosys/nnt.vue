@@ -7,6 +7,7 @@ import {config} from "./Config";
 import "babel-polyfill";
 
 Vue.config.productionTip = false
+Vue.use(Router)
 declare let VConsole: any;
 
 export interface IAppliationLaunchOption {
