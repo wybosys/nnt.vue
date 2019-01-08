@@ -9,7 +9,7 @@ Vue.config.productionTip = false
 export interface IAppliationLaunchOption {
   el?: string;
   router: Router;
-  component: any;
+  app: any;
   template?: string;
 }
 
@@ -22,13 +22,13 @@ export class Application {
     if (opt.template)
       this.template = opt.template;
     this.router = opt.router;
-    this.component = opt.component;
+    this.app = opt.app;
   }
 
   // 对应于vue初始化的设置
   el: string = '#app';
   router: Router;
-  component: any;
+  app: any;
   template: string = 'App';
 
   // 全局的单件
@@ -64,7 +64,7 @@ export class Application {
       template: '<' + this.template + '/>',
       components: {}
     };
-    opts.components[this.template] = this.component;
+    opts.components[this.template] = this.app;
     new Vue(opts);
   }
 }

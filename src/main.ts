@@ -15,7 +15,7 @@ config.host(/localhost/, {
 })
 
 new Application({
-  component: App,
+  app: App,
   router: router
 }).start()
 
