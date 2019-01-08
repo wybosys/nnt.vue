@@ -26,6 +26,16 @@ export class Application {
       this.template = opt.template;
     this.router = opt.router;
     this.app = opt.app;
+
+    // 开发模式
+    if (config.get('DEVELOP')) {
+      // 启动console
+      if (config.get('VCONSOLE')) {
+        loadScript('https://cdn.bootcss.com/vConsole/3.2.0/vconsole.min.js').then(() => {
+          new VConsole();
+        });
+      }
+    }
   }
 
   // 对应于vue初始化的设置
@@ -70,15 +80,5 @@ export class Application {
     };
     opts.components[this.template] = this.app;
     new Vue(opts);
-
-    // 开发模式
-    if (config.get('DEVELOP')) {
-      // 启动console
-      if (config.get('VCONSOLE')) {
-        loadScript('https://cdn.bootcss.com/vConsole/3.2.0/vconsole.min.js').then(() => {
-          new VConsole();
-        });
-      }
-    }
   }
 }
