@@ -1,10 +1,12 @@
 import {Storage} from './Storage';
-import {uuid} from "./Compat";
+import {loadScript, uuid} from "./Compat";
 import Vue from 'vue'
 import Router from 'vue-router'
 import {IndexedObject} from "./Kernel";
+import {config} from "./Config";
 
 Vue.config.productionTip = false
+declare let vConsole: any;
 
 export interface IAppliationLaunchOption {
   el?: string;
@@ -58,6 +60,7 @@ export class Application {
 
   // 启动应用
   start() {
+    // 启动VUE
     let opts: IndexedObject = {
       el: this.el,
       router: this.router,
@@ -66,5 +69,13 @@ export class Application {
     };
     opts.components[this.template] = this.app;
     new Vue(opts);
+
+    // 启动console
+    if (config.get('VCONSOLE')) {
+      loadScript('https://cdn.bootcss.com/vConsole/3.2.0/vconsole.min.js').then(() => {
+        alert();
+        new vConsole();
+      });
+    }
   }
 }

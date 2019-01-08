@@ -146,36 +146,31 @@ export var uuid = function (len: number, radix: number) {
 export function loadScript(src: string): Promise<void> {
   return new Promise<void>(resolve => {
     var s: any = document.createElement('script');
+    s.src = src;
     if (s.hasOwnProperty("async")) {
       s.async = true;
-    }
-    s.src = src;
-    var fun = function () {
-      this.removeEventListener('load', fun, false);
+      var fun = function () {
+        this.removeEventListener('load', fun, false);
+        resolve();
+      };
+      s.addEventListener('load', fun, false);
+      s.addEventListener('error', fun, false);
+      document.body.appendChild(s);
+    } else {
+      document.body.appendChild(s);
       resolve();
-    };
-    s.addEventListener('load', fun, false);
-    s.addEventListener('error', fun, false);
-    document.body.appendChild(s);
+    }
   });
 }
 
 export function loadStyle(src: string): Promise<void> {
   return new Promise<void>(resolve => {
     var s: any = document.createElement('link');
-    if (s.hasOwnProperty("async")) {
-      s.async = true;
-    }
     s.setAttribute("rel", "stylesheet");
     s.setAttribute("type", "text/css");
     s.setAttribute("href", src);
-    var fun = function () {
-      this.removeEventListener('load', fun, false);
-      resolve();
-    };
-    s.addEventListener('load', fun, false);
-    s.addEventListener('error', fun, false);
     document.body.appendChild(s);
+    resolve();
   });
 }
 
