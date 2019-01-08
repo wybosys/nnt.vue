@@ -6,7 +6,7 @@ import {IndexedObject} from "./Kernel";
 import {config} from "./Config";
 
 Vue.config.productionTip = false
-declare let vConsole: any;
+declare let VConsole: any;
 
 export interface IAppliationLaunchOption {
   el?: string;
@@ -75,8 +75,7 @@ export class Application {
       // 启动console
       if (config.get('VCONSOLE')) {
         loadScript('https://cdn.bootcss.com/vConsole/3.2.0/vconsole.min.js').then(() => {
-          alert();
-          new vConsole();
+          new VConsole();
         });
       }
     }

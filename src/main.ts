@@ -10,7 +10,7 @@ new Application({
 }).start()
 
 declare let sdks: any
-if (sdks) {
+if (typeof sdks != "undefined") {
   sdks.config.set('CHANNEL_ID', 1804)
   sdks.config.set('GAME_ID', 100)
   sdks.init().then(() => {

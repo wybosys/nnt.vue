@@ -149,17 +149,14 @@ export function loadScript(src: string): Promise<void> {
     s.src = src;
     if (s.hasOwnProperty("async")) {
       s.async = true;
-      var fun = function () {
-        this.removeEventListener('load', fun, false);
-        resolve();
-      };
-      s.addEventListener('load', fun, false);
-      s.addEventListener('error', fun, false);
-      document.body.appendChild(s);
-    } else {
-      document.body.appendChild(s);
-      resolve();
     }
+    var fun = function () {
+      this.removeEventListener('load', fun, false);
+      resolve();
+    };
+    s.addEventListener('load', fun, false);
+    s.addEventListener('error', fun, false);
+    document.body.appendChild(s);
   });
 }
 
