@@ -1,13 +1,11 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
-import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import {config} from "./nnt/Config"
 import {SampleLoginsdk, SampleLoginverifysdk} from "./app/framework-nntlogic-apis";
 import {Get} from "./nnt/RestSession";
-
-Vue.config.productionTip = false
+import {Application} from "./nnt/Application";
 
 config.host(/localhost/, {
   LOCAL: true,
@@ -16,13 +14,10 @@ config.host(/localhost/, {
   HOST: "http://localhost:8090/"
 })
 
-/* eslint-disable no-new */
-new Vue({
-  el: '#app',
-  router,
-  components: {App},
-  template: '<App/>'
-})
+new Application({
+  component: App,
+  router: router
+}).start()
 
 declare let sdks: any
 if (sdks) {

@@ -1,25 +1,70 @@
 import {Storage} from './Storage';
 import {uuid} from "./Compat";
+import Vue from 'vue'
+import Router from 'vue-router'
+import {IndexedObject} from "./Kernel";
 
-export let UNIQUEID: string;
+Vue.config.productionTip = false
 
-function GenerateUniqueId(): string {
-  return uuid(16, 16);
+export interface IAppliationLaunchOption {
+  el?: string;
+  router: Router;
+  component: any;
+  template?: string;
 }
 
-/** 应用的唯一标示 */
-export function UniqueId(): string {
-  if (UNIQUEID)
-    return UNIQUEID;
-  let id = Storage.shared.value("::n2::app::uid");
-  if (id == null) {
-    id = GenerateUniqueId();
-    Storage.shared.set("::n2::app::uid", id);
-    UNIQUEID = id;
-  } else {
-    UNIQUEID = id;
+export class Application {
+  constructor(opt: IAppliationLaunchOption) {
+    Application.shared = this;
+
+    if (opt.el)
+      this.el = opt.el;
+    if (opt.template)
+      this.template = opt.template;
+    this.router = opt.router;
+    this.component = opt.component;
   }
-  return UNIQUEID;
+
+  // 对应于vue初始化的设置
+  el: string = '#app';
+  router: Router;
+  component: any;
+  template: string = 'App';
+
+  // 全局的单件
+  static shared: Application;
+
+  // 获得app的唯一id
+  uniqueId(): string {
+    if (this._uniqueid)
+      return this._uniqueid;
+    let id = Storage.shared.value("::n2::app::uid");
+    if (id == null) {
+      id = this.genUniqueId();
+      Storage.shared.set("::n2::app::uid", id);
+      this._uniqueid = id;
+    } else {
+      this._uniqueid = id;
+    }
+    return this._uniqueid;
+  }
+
+  protected genUniqueId(): string {
+    return uuid(16, 16);
+  }
+
+  // app的唯一标识
+  private _uniqueid: string;
+
+  // 启动应用
+  start() {
+    let opts: IndexedObject = {
+      el: this.el,
+      router: this.router,
+      template: '<' + this.template + '/>',
+      components: {}
+    };
+    opts.components[this.template] = this.component;
+    new Vue(opts);
+  }
 }
-
-

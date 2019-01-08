@@ -13,7 +13,7 @@ import {
 import {KvObject} from "./Stl";
 import {Model} from "./ApiModel";
 import {WebSocketConnector} from "./SocketSession";
-import {UniqueId} from "./Application";
+import {Application} from "./Application";
 
 type Class<T> = { new(...args: any[]): T, [key: string]: any };
 type AnyClass = Class<any>;
@@ -694,7 +694,7 @@ export class SocketConnector extends WebSocketConnector {
     let params: IndexedObject = {
       _cmid: d.hashCode,
       _sid: this.session.SID,
-      _cid: UniqueId(),
+      _cid: Application.shared.uniqueId(),
       _ts: DateTime.Now(),
       action: d.action,
     };
@@ -709,7 +709,7 @@ export class SocketConnector extends WebSocketConnector {
     let params: IndexedObject = {
       _cmid: d.hashCode,
       _sid: this.session.SID,
-      _cid: UniqueId(),
+      _cid: Application.shared.uniqueId(),
       _ts: DateTime.Now(),
       _listen: on ? 1 : 2, // 对应于服务器设置的 ListenMode.LISTEN/UNLISTEN
       action: d.action,
