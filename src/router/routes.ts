@@ -1,4 +1,4 @@
-const Sample = () => import("../components/Sample.vue")
+const Sample = () => import("../components/sample/Sample.vue")
 
 export default [
   {
