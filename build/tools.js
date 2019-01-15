@@ -38,8 +38,19 @@ function GenRoutes() {
     defs.push("\t{\n\t\tpath: '" + key + "',\n\t\tcomponent: " + name + ",\n\t\tname: '" + name + "'\n\t}")
   }
 
+  // 如果是二级目录，则需要生成额外的router
+  if (fs.existsSync('devops.json')) {
+    let devops = JSON.parse(fs.readFileSync('devops.json'))
+    let path = devops.path.substr(15)
+    for (let key in routes) {
+      let name = key.replace(/\//g, '_')
+      key = path + key
+      defs.push("\t{\n\t\tpath: '" + key + "',\n\t\tcomponent: " + name + ",\n\t\tname: '" + name + "'\n\t}")
+    }
+  }
+
   content = imports.join('\n')
-  content += '\n'
+  content += '\n\n'
   content += 'export default [\n'
   content += defs.join(',\n')
   content += '\n]\n'
