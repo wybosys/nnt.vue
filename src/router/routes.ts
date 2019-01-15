@@ -9,34 +9,42 @@ const _test_test = () => import("../components/test/Test.vue")
 export default [
 	{
 		path: '/sample',
-		component: _sample
+		component: _sample,
+		name: '_sample'
 	},
 	{
 		path: '/',
-		component: _
+		component: _,
+		name: '_'
 	},
 	{
 		path: '/sample/audiorecorder',
-		component: _sample_audiorecorder
+		component: _sample_audiorecorder,
+		name: '_sample_audiorecorder'
 	},
 	{
 		path: '/sample/echo',
-		component: _sample_echo
+		component: _sample_echo,
+		name: '_sample_echo'
 	},
 	{
 		path: '/sample/helloworld',
-		component: _sample_helloworld
+		component: _sample_helloworld,
+		name: '_sample_helloworld'
 	},
 	{
 		path: '/sample/sample',
-		component: _sample_sample
+		component: _sample_sample,
+		name: '_sample_sample'
 	},
 	{
 		path: '/test',
-		component: _test
+		component: _test,
+		name: '_test'
 	},
 	{
 		path: '/test/test',
-		component: _test_test
+		component: _test_test,
+		name: '_test_test'
 	}
 ]
