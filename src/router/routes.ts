@@ -1,11 +1,11 @@
-const _sample = () => import("../components/sample/Sample.vue")
-const Sample = () => import("../components/sample/Sample.vue")
-const _sample_audiorecorder = () => import("../components/sample/AudioRecorder.vue")
-const _sample_echo = () => import("../components/sample/Echo.vue")
-const _sample_helloworld = () => import("../components/sample/HelloWorld.vue")
-const _sample_sample = () => import("../components/sample/Sample.vue")
-const _test = () => import("../components/test/Test.vue")
-const _test_test = () => import("../components/test/Test.vue")
+import _sample from "../components/sample/Sample.vue"
+import _ from "../components/sample/Sample.vue"
+import _sample_audiorecorder from "../components/sample/AudioRecorder.vue"
+import _sample_echo from "../components/sample/Echo.vue"
+import _sample_helloworld from "../components/sample/HelloWorld.vue"
+import _sample_sample from "../components/sample/Sample.vue"
+import _test from "../components/test/Test.vue"
+import _test_test from "../components/test/Test.vue"
 export default [
 	{
 		path: '/sample',
@@ -14,8 +14,8 @@ export default [
 	},
 	{
 		path: '/',
-		component: Sample,
-		name: 'Sample'
+		component: _,
+		name: '_'
 	},
 	{
 		path: '/sample/audiorecorder',
