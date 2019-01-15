@@ -15,7 +15,7 @@ export default [
 	{
 		path: '/',
 		component: _,
-		name: '_'
+		name: 'Sample'
 	},
 	{
 		path: '/sample/audiorecorder',
