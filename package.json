@@ -11,7 +11,8 @@
     "devops-restart": "npm run dev",
     "start": "npm run dev",
     "stop": "node build/tools.js stop",
-    "build": "node build/build.js"
+    "build": "node build/build.js",
+    "routes": "node build/tools.js routes"
   },
   "dependencies": {
     "vue": "^2.5.2",

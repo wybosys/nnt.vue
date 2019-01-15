@@ -18,8 +18,15 @@ function SaveDevServer() {
   fs.writeFileSync('run/dev-server.pid', process.pid)
 }
 
-if (process.argv.indexOf('stop')) {
+function GenRoutes() {
+  // 默认输出到src/router/index.ts中
+
+}
+
+if (process.argv.indexOf('stop') != -1) {
   StopDevServer()
+} else if (process.argv.indexOf('routes') != -1) {
+  GenRoutes()
 }
 
 module.exports = {
