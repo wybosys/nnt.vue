@@ -50,42 +50,42 @@ export default [
 	},
 	{
 		path: '/framework/nntvue/sample',
-		component: _sample,
-		name: '_sample'
+		component: _sample_devops,
+		name: '_sample_devops'
 	},
 	{
 		path: '/framework/nntvue/',
-		component: _,
-		name: '_'
+		component: __devops,
+		name: '__devops'
 	},
 	{
 		path: '/framework/nntvue/sample/audiorecorder',
-		component: _sample_audiorecorder,
-		name: '_sample_audiorecorder'
+		component: _sample_audiorecorder_devops,
+		name: '_sample_audiorecorder_devops'
 	},
 	{
 		path: '/framework/nntvue/sample/echo',
-		component: _sample_echo,
-		name: '_sample_echo'
+		component: _sample_echo_devops,
+		name: '_sample_echo_devops'
 	},
 	{
 		path: '/framework/nntvue/sample/helloworld',
-		component: _sample_helloworld,
-		name: '_sample_helloworld'
+		component: _sample_helloworld_devops,
+		name: '_sample_helloworld_devops'
 	},
 	{
 		path: '/framework/nntvue/sample/sample',
-		component: _sample_sample,
-		name: '_sample_sample'
+		component: _sample_sample_devops,
+		name: '_sample_sample_devops'
 	},
 	{
 		path: '/framework/nntvue/test',
-		component: _test,
-		name: '_test'
+		component: _test_devops,
+		name: '_test_devops'
 	},
 	{
 		path: '/framework/nntvue/test/test',
-		component: _test_test,
-		name: '_test_test'
+		component: _test_test_devops,
+		name: '_test_test_devops'
 	}
 ]
