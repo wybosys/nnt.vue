@@ -1,5 +1,5 @@
 const _sample = () => import("../components/sample/Sample.vue")
-const _ = () => import("../components/sample/Sample.vue")
+const Sample = () => import("../components/sample/Sample.vue")
 const _sample_audiorecorder = () => import("../components/sample/AudioRecorder.vue")
 const _sample_echo = () => import("../components/sample/Echo.vue")
 const _sample_helloworld = () => import("../components/sample/HelloWorld.vue")
@@ -14,7 +14,7 @@ export default [
 	},
 	{
 		path: '/',
-		component: _,
+		component: Sample,
 		name: 'Sample'
 	},
 	{
