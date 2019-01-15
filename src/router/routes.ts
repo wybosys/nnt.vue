@@ -1,11 +1,11 @@
-import _sample from "../components/sample/Sample.vue"
-import _ from "../components/sample/Sample.vue"
-import _sample_audiorecorder from "../components/sample/AudioRecorder.vue"
-import _sample_echo from "../components/sample/Echo.vue"
-import _sample_helloworld from "../components/sample/HelloWorld.vue"
-import _sample_sample from "../components/sample/Sample.vue"
-import _test from "../components/test/Test.vue"
-import _test_test from "../components/test/Test.vue"
+const _sample = () => ("../components/sample/Sample.vue")
+const _ = () => ("../components/sample/Sample.vue")
+const _sample_audiorecorder = () => ("../components/sample/AudioRecorder.vue")
+const _sample_echo = () => ("../components/sample/Echo.vue")
+const _sample_helloworld = () => ("../components/sample/HelloWorld.vue")
+const _sample_sample = () => ("../components/sample/Sample.vue")
+const _test = () => ("../components/test/Test.vue")
+const _test_test = () => ("../components/test/Test.vue")
 
 export default [
 	{

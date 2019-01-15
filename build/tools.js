@@ -34,7 +34,7 @@ function GenRoutes() {
 
   for (let key in routes) {
     let name = key.replace(/\//g, '_')
-    imports.push('import ' + name + ' from "../components' + routes[key] + '"')
+    imports.push('const ' + name + ' = () => ("../components' + routes[key] + '")')
     defs.push("\t{\n\t\tpath: '" + key + "',\n\t\tcomponent: " + name + ",\n\t\tname: '" + name + "'\n\t}")
   }
 
