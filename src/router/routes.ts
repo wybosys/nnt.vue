@@ -1,11 +1,11 @@
-const _sample = () => ("../components/sample/Sample.vue")
-const _ = () => ("../components/sample/Sample.vue")
-const _sample_audiorecorder = () => ("../components/sample/AudioRecorder.vue")
-const _sample_echo = () => ("../components/sample/Echo.vue")
-const _sample_helloworld = () => ("../components/sample/HelloWorld.vue")
-const _sample_sample = () => ("../components/sample/Sample.vue")
-const _test = () => ("../components/test/Test.vue")
-const _test_test = () => ("../components/test/Test.vue")
+const _sample = () => import("../components/sample/Sample.vue")
+const _ = () => import("../components/sample/Sample.vue")
+const _sample_audiorecorder = () => import("../components/sample/AudioRecorder.vue")
+const _sample_echo = () => import("../components/sample/Echo.vue")
+const _sample_helloworld = () => import("../components/sample/HelloWorld.vue")
+const _sample_sample = () => import("../components/sample/Sample.vue")
+const _test = () => import("../components/test/Test.vue")
+const _test_test = () => import("../components/test/Test.vue")
 
 export default [
 	{
