@@ -43,7 +43,7 @@ module.exports = {
     // Paths
     assetsRoot: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: 'static',
-    assetsPublicPath: '/framework/nnt.vue/dist/',
+    assetsPublicPath: '/framework/nnt.vue',
 
     /**
      * Source Maps
