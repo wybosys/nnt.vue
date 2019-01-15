@@ -50,42 +50,42 @@ export default [
 	},
 	{
 		path: '/framework/nntvue/sample',
-		component: _sample_devops,
-		name: '_sample_devops'
+		component: _sample,
+		name: 'devops_sample'
 	},
 	{
 		path: '/framework/nntvue/',
-		component: __devops,
-		name: '__devops'
+		component: _,
+		name: 'devops_'
 	},
 	{
 		path: '/framework/nntvue/sample/audiorecorder',
-		component: _sample_audiorecorder_devops,
-		name: '_sample_audiorecorder_devops'
+		component: _sample_audiorecorder,
+		name: 'devops_sample_audiorecorder'
 	},
 	{
 		path: '/framework/nntvue/sample/echo',
-		component: _sample_echo_devops,
-		name: '_sample_echo_devops'
+		component: _sample_echo,
+		name: 'devops_sample_echo'
 	},
 	{
 		path: '/framework/nntvue/sample/helloworld',
-		component: _sample_helloworld_devops,
-		name: '_sample_helloworld_devops'
+		component: _sample_helloworld,
+		name: 'devops_sample_helloworld'
 	},
 	{
 		path: '/framework/nntvue/sample/sample',
-		component: _sample_sample_devops,
-		name: '_sample_sample_devops'
+		component: _sample_sample,
+		name: 'devops_sample_sample'
 	},
 	{
 		path: '/framework/nntvue/test',
-		component: _test_devops,
-		name: '_test_devops'
+		component: _test,
+		name: 'devops_test'
 	},
 	{
 		path: '/framework/nntvue/test/test',
-		component: _test_test_devops,
-		name: '_test_test_devops'
+		component: _test_test,
+		name: 'devops_test_test'
 	}
 ]

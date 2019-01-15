@@ -43,9 +43,9 @@ function GenRoutes() {
     let devops = JSON.parse(fs.readFileSync('devops.json'))
     let path = devops.path.substr(15)
     for (let key in routes) {
-      let name = key.replace(/\//g, '_') + '_devops'
+      let name = key.replace(/\//g, '_')
       key = path + key
-      defs.push("\t{\n\t\tpath: '" + key + "',\n\t\tcomponent: " + name + ",\n\t\tname: '" + name + "'\n\t}")
+      defs.push("\t{\n\t\tpath: '" + key + "',\n\t\tcomponent: " + name + ",\n\t\tname: 'devops" + name + "'\n\t}")
     }
   }
 
