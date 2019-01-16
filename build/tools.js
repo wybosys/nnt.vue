@@ -19,7 +19,7 @@ function SaveDevServer() {
   fs.writeFileSync('run/dev-server.pid', process.pid)
 }
 
-function GenRoutes() {
+function GenRoutes(srcdir, outputfile) {
   // 默认输出到src/router/index.ts中
   // 默认组件保存在src/components中
 
@@ -27,7 +27,7 @@ function GenRoutes() {
   let routes = {}
 
   // 列出所有目录中的组件
-  ListRoutesInDirectory('src/components', '', routes)
+  ListRoutesInDirectory('src/' + srcdir, '', routes)
 
   let imports = []
   let defs = []
@@ -56,7 +56,7 @@ function GenRoutes() {
   content += '\n]\n'
 
   // 保存
-  fs.writeFileSync('src/router/routes.ts', content)
+  fs.writeFileSync('src/router/' + outputfile + '.ts', content)
 }
 
 function UppercaseFirst(str) {
@@ -91,10 +91,16 @@ function ListRoutesInDirectory(dir, cur, result) {
   })
 }
 
+function GenSites() {
+
+}
+
 if (process.argv.indexOf('stop') != -1) {
   StopDevServer()
 } else if (process.argv.indexOf('routes') != -1) {
-  GenRoutes()
+  GenRoutes('components', 'routes')
+} else if (process.argv.indexOf('sites') != -1) {
+  GenSites()
 }
 
 module.exports = {
