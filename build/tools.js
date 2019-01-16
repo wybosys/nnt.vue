@@ -19,7 +19,7 @@ function SaveDevServer() {
   fs.writeFileSync('run/dev-server.pid', process.pid)
 }
 
-function GenRoutes(srcdir, outputfile) {
+function GenRoutes(srcdir, outputfile, site) {
   // 默认输出到src/router/index.ts中
   // 默认组件保存在src/components中
 
@@ -27,7 +27,7 @@ function GenRoutes(srcdir, outputfile) {
   let routes = {}
 
   // 列出所有目录中的组件
-  ListRoutesInDirectory('src/' + srcdir, '', routes)
+  ListRoutesInDirectory('src/' + srcdir, '', routes, site)
 
   let imports = []
   let defs = []
@@ -65,7 +65,7 @@ function UppercaseFirst(str) {
   return str[0].toUpperCase() + str.substr(1)
 }
 
-function ListRoutesInDirectory(dir, cur, result) {
+function ListRoutesInDirectory(dir, cur, result, site) {
   let cfg = dir + '/config.json'
   if (fs.existsSync(cfg)) {
     let cfgobj = JSON.parse(fs.readFileSync(cfg))
@@ -76,6 +76,12 @@ function ListRoutesInDirectory(dir, cur, result) {
         result[path.dirname(cur)] = cur + '/' + rootname + '.vue'
       }
     }
+  }
+
+  // 如果是site模式，则必须生成根
+  if (site) {
+    //let rootname = UppercaseFirst(path.basename(cur))
+    //result[path.dirname(cur)] = cur + '/' + rootname + '.vue'
   }
 
   fs.readdirSync(dir).forEach(each => {
@@ -96,7 +102,7 @@ function GenSites() {
   fs.readdirSync('src/' + dir).forEach(each => {
     let st = fs.statSync('src/' + dir + '/' + each)
     if (st.isDirectory()) {
-      GenRoutes(dir + '/' + each, each)
+      GenRoutes(dir + '/' + each, each, true)
     }
   })
 }
