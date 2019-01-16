@@ -92,7 +92,13 @@ function ListRoutesInDirectory(dir, cur, result) {
 }
 
 function GenSites() {
-
+  dir = 'sites'
+  fs.readdirSync('src/' + dir).forEach(each => {
+    let st = fs.statSync('src/' + dir + '/' + each)
+    if (st.isDirectory()) {
+      GenRoutes(dir + '/' + each, each)
+    }
+  })
 }
 
 if (process.argv.indexOf('stop') != -1) {
