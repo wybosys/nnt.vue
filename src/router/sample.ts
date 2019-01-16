@@ -1,9 +1,15 @@
-const _audiorecorder = () => import("../components/AudioRecorder.vue")
-const _echo = () => import("../components/Echo.vue")
-const _helloworld = () => import("../components/HelloWorld.vue")
-const _sample = () => import("../components/Sample.vue")
+const _ = () => import("../sites/sample/Sample.vue")
+const _audiorecorder = () => import("../sites/sample/AudioRecorder.vue")
+const _echo = () => import("../sites/sample/Echo.vue")
+const _helloworld = () => import("../sites/sample/HelloWorld.vue")
+const _sample = () => import("../sites/sample/Sample.vue")
 
 export default [
+	{
+		path: '/',
+		component: _,
+		name: '_'
+	},
 	{
 		path: '/audiorecorder',
 		component: _audiorecorder,
@@ -23,6 +29,11 @@ export default [
 		path: '/sample',
 		component: _sample,
 		name: '_sample'
+	},
+	{
+		path: '/framework/nntvue/',
+		component: _,
+		name: 'devops_'
 	},
 	{
 		path: '/framework/nntvue/audiorecorder',

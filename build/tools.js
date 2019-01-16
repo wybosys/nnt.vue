@@ -19,7 +19,7 @@ function SaveDevServer() {
   fs.writeFileSync('run/dev-server.pid', process.pid)
 }
 
-function GenRoutes(srcdir, outputfile, site) {
+function GenRoutes(srcdir, outputfile) {
   // 默认输出到src/router/index.ts中
   // 默认组件保存在src/components中
 
@@ -27,7 +27,7 @@ function GenRoutes(srcdir, outputfile, site) {
   let routes = {}
 
   // 列出所有目录中的组件
-  ListRoutesInDirectory('src/' + srcdir, '', routes, site)
+  ListRoutesInDirectory('src/' + srcdir, '', routes)
 
   let imports = []
   let defs = []
@@ -59,6 +59,46 @@ function GenRoutes(srcdir, outputfile, site) {
   fs.writeFileSync('src/router/' + outputfile + '.ts', content)
 }
 
+function GenRoutesInSite(srcdir, site) {
+  // 默认输出到src/router/index.ts中
+  // 默认组件保存在src/components中
+
+  // { path: filepath }
+  let routes = {}
+
+  // 列出所有目录中的组件
+  ListRoutesInDirectory('src/' + srcdir, '', routes, site)
+
+  let imports = []
+  let defs = []
+
+  for (let key in routes) {
+    let name = key.replace(/\//g, '_')
+    imports.push('const ' + name + ' = () => import("../sites/' + site + routes[key] + '")')
+    defs.push("\t{\n\t\tpath: '" + key + "',\n\t\tcomponent: " + name + ",\n\t\tname: '" + name + "'\n\t}")
+  }
+
+  // 如果是二级目录，则需要生成额外的router
+  if (fs.existsSync('devops.json')) {
+    let devops = JSON.parse(fs.readFileSync('devops.json'))
+    let path = devops.path.substr(15)
+    for (let key in routes) {
+      let name = key.replace(/\//g, '_')
+      key = path + key
+      defs.push("\t{\n\t\tpath: '" + key + "',\n\t\tcomponent: " + name + ",\n\t\tname: 'devops" + name + "'\n\t}")
+    }
+  }
+
+  content = imports.join('\n')
+  content += '\n\n'
+  content += 'export default [\n'
+  content += defs.join(',\n')
+  content += '\n]\n'
+
+  // 保存
+  fs.writeFileSync('src/router/' + site + '.ts', content)
+}
+
 function UppercaseFirst(str) {
   if (!str || str.length == 0)
     return str
@@ -80,8 +120,8 @@ function ListRoutesInDirectory(dir, cur, result, site) {
 
   // 如果是site模式，则必须生成根
   if (site) {
-    //let rootname = UppercaseFirst(path.basename(cur))
-    //result[path.dirname(cur)] = cur + '/' + rootname + '.vue'
+    let rootname = UppercaseFirst(site)
+    result['/'] = cur + '/' + rootname + '.vue'
   }
 
   fs.readdirSync(dir).forEach(each => {
@@ -102,7 +142,7 @@ function GenSites() {
   fs.readdirSync('src/' + dir).forEach(each => {
     let st = fs.statSync('src/' + dir + '/' + each)
     if (st.isDirectory()) {
-      GenRoutes(dir + '/' + each, each, true)
+      GenRoutesInSite(dir + '/' + each, each)
     }
   })
 }
