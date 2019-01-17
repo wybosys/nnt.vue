@@ -9,6 +9,6 @@ export default [
 	{
 		path: '/:site',
 		component: _,
-		name: '_site_'
+		name: '_site__'
 	}
 ]
