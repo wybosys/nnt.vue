@@ -121,37 +121,19 @@ let _storageMode = ((): number => {
 })();
 
 if (_storageMode == 0) {
-  IMP_STORAGE_GET = localStorage.getItem;
-  IMP_STORAGE_SET = localStorage.setItem;
-  IMP_STORAGE_DEL = localStorage.removeItem;
-  IMP_STORAGE_CLEAR = localStorage.clear;
-}
-else if (_storageMode == 1) {
-  IMP_STORAGE_GET = (k: string): string => {
-    return window.sessionStorage.getItem(k);
-  };
-  IMP_STORAGE_SET = (k: string, v: string) => {
-    window.sessionStorage.setItem(k, v);
-  };
-  IMP_STORAGE_DEL = (k: string) => {
-    window.sessionStorage.removeItem(k);
-  };
-  IMP_STORAGE_CLEAR = () => {
-    window.sessionStorage.clear();
-  };
-}
-else {
-  let __g_storage: IndexedObject = {};
-  IMP_STORAGE_GET = (key: string): string => {
-    return __g_storage[key];
-  };
-  IMP_STORAGE_SET = (key: string, v: string) => {
-    __g_storage[key] = v;
-  };
-  IMP_STORAGE_DEL = (key: string) => {
-    delete __g_storage[key];
-  };
-  IMP_STORAGE_CLEAR = () => {
-    __g_storage = {};
-  };
+  IMP_STORAGE_GET = k => localStorage.getItem(k)
+  IMP_STORAGE_SET = (k, v) => localStorage.setItem(k, v)
+  IMP_STORAGE_DEL = k => localStorage.removeItem(k)
+  IMP_STORAGE_CLEAR = () => localStorage.clear()
+} else if (_storageMode == 1) {
+  IMP_STORAGE_GET = k => window.sessionStorage.getItem(k)
+  IMP_STORAGE_SET = (k, v) => window.sessionStorage.setItem(k, v)
+  IMP_STORAGE_DEL = k => window.sessionStorage.removeItem(k)
+  IMP_STORAGE_CLEAR = () => window.sessionStorage.clear()
+} else {
+  let __g_storage: IndexedObject = {}
+  IMP_STORAGE_GET = k => __g_storage[k]
+  IMP_STORAGE_SET = (k, v) => __g_storage[k] = v
+  IMP_STORAGE_DEL = k => delete __g_storage[k]
+  IMP_STORAGE_CLEAR = () => __g_storage = {}
 }

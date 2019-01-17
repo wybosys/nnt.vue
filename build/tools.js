@@ -151,7 +151,8 @@ function GenSites() {
   content.push('const _ = () => import("../nnt/Site.vue")')
   content.push('')
   content.push('export default [')
-  content.push("\t{\n\t\tpath: '/',\n\t\tcomponent: _,\n\t\tname: '_site_'\n\t}")
+  content.push("\t{\n\t\tpath: '/',\n\t\tcomponent: _,\n\t\tname: '_site_'\n\t},")
+  content.push("\t{\n\t\tpath: '/:site',\n\t\tcomponent: _,\n\t\tname: '_site_'\n\t}")
   content.push(']')
   fs.writeFileSync('src/router/routes.ts', content.join('\n'))
 }

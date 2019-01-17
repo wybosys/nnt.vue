@@ -5,5 +5,10 @@ export default [
 		path: '/',
 		component: _,
 		name: '_site_'
+	},
+	{
+		path: '/:site',
+		component: _,
+		name: '_site_'
 	}
 ]
