@@ -2,7 +2,7 @@ import {Storage} from './Storage';
 import {loadScript, uuid} from "./Compat";
 import Vue from 'vue'
 import Router from 'vue-router'
-import {IndexedObject} from "./Kernel";
+import {IndexedObject, IndexedType} from "./Kernel";
 import {config} from "./Config";
 import "babel-polyfill";
 
@@ -12,7 +12,7 @@ declare let VConsole: any;
 
 export interface IApplicationRouter {
   routes: { path: string, component: any, name: string }[],
-  sites?: any[]
+  sites?: IndexedType<any>
 }
 
 export interface IAppliationLaunchOption {

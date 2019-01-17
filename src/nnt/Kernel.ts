@@ -9,6 +9,10 @@ export type IndexedObject = {
   [key: string]: any
   [key: number]: any
 };
+export type IndexedType<T> = {
+  [key: string]: T
+  [key: number]: T
+};
 
 // 默认的时间单位，秒
 export type Interval = number;
@@ -68,7 +72,7 @@ function SafeNumber(o: number, def = 0): number {
 export function toFloat(o: any, def = 0): number {
   if (o == null)
     return def;
-  let tp = typeof(o);
+  let tp = typeof (o);
   if (tp == 'number')
     return SafeNumber(o, def);
   if (tp == 'string') {
@@ -84,7 +88,7 @@ export function toFloat(o: any, def = 0): number {
 export function toInt(o: any, def = 0): number {
   if (o == null)
     return def;
-  let tp = typeof(o);
+  let tp = typeof (o);
   if (tp == 'number' || tp == 'string') {
     let v = parseInt(o);
     return SafeNumber(v, def);
@@ -100,7 +104,7 @@ export function toInt(o: any, def = 0): number {
 export function toNumber(o: any, def = 0): number {
   if (o == null)
     return def;
-  let tp = typeof(o);
+  let tp = typeof (o);
   if (tp == 'number')
     return SafeNumber(o, def);
   if (tp == 'string') {
@@ -120,7 +124,7 @@ export function toNumber(o: any, def = 0): number {
 export function asString(o: any, def = ''): string {
   if (o == null)
     return def;
-  let tp = typeof(o);
+  let tp = typeof (o);
   if (tp == 'string')
     return o;
   if (tp == 'number')
@@ -132,14 +136,13 @@ export function asString(o: any, def = ''): string {
 
 /** 转换到json字串 */
 export function toJson(o: any, def: string = null): string {
-  let t = typeof(o);
+  let t = typeof (o);
   if (t == 'string')
     return o;
   let r = null;
   try {
     r = JSON.stringify(o);
-  }
-  catch (ex) {
+  } catch (ex) {
     r = def;
   }
   return r;
@@ -147,7 +150,7 @@ export function toJson(o: any, def: string = null): string {
 
 /** 转换到对象 */
 export function toJsonObject(o: jsonobj, def: string = null): Object {
-  let t = typeof(o);
+  let t = typeof (o);
   if (t == 'string')
     return JSON.parse(<string>o);
   else if (t == 'object')
@@ -211,7 +214,7 @@ export function json_decode(str: string): any {
 export function IsEmpty(o: any): boolean {
   if (o == null)
     return true;
-  let tp = typeof(o);
+  let tp = typeof (o);
   if (tp == 'string') {
     if (tp.length == 0)
       return true;
@@ -221,10 +224,10 @@ export function IsEmpty(o: any): boolean {
     return (<any>o).length == 0;
   }
   if (o instanceof CMap) {
-    return (<CMap<any, any> >o).length != 0;
+    return (<CMap<any, any>>o).length != 0;
   }
   if (o instanceof CSet) {
-    return (<CSet<any> >o).size != 0;
+    return (<CSet<any>>o).size != 0;
   }
   return Object.keys(o).length == 0;
 }
@@ -634,7 +637,7 @@ export class DateTime {
   /** 计算diff-year，根绝suffix的类型返回对应的类型 */
   dyears(up: boolean = true, suffix: any | string = 0): any {
     let v = DateTime.Dyears(this._timestamp, up);
-    if (typeof(suffix) == 'string')
+    if (typeof (suffix) == 'string')
       return v ? v + suffix : '';
     return v + suffix;
   }
@@ -642,7 +645,7 @@ export class DateTime {
   /** 计算diff-months */
   dmonths(up: boolean = true, suffix: any | string = 0): any {
     let v = DateTime.Dmonths(this._timestamp, up);
-    if (typeof(suffix) == 'string')
+    if (typeof (suffix) == 'string')
       return v ? v + suffix : '';
     return v + suffix;
   }
@@ -650,7 +653,7 @@ export class DateTime {
   /** 计算diff-days */
   ddays(up: boolean = true, suffix: any | string = 0): any {
     let v = DateTime.Ddays(this._timestamp, up);
-    if (typeof(suffix) == 'string')
+    if (typeof (suffix) == 'string')
       return v ? v + suffix : '';
     return v + suffix;
   }
@@ -658,7 +661,7 @@ export class DateTime {
   /** 计算diff-hours */
   dhours(up: boolean = true, suffix: any | string = 0): any {
     let v = DateTime.Dhours(this._timestamp, up);
-    if (typeof(suffix) == 'string')
+    if (typeof (suffix) == 'string')
       return v ? v + suffix : '';
     return v + suffix;
   }
@@ -666,7 +669,7 @@ export class DateTime {
   /** 计算diff-mins */
   dminutes(up: boolean = true, suffix: any | string = 0): any {
     let v = DateTime.Dminutes(this._timestamp, up);
-    if (typeof(suffix) == 'string')
+    if (typeof (suffix) == 'string')
       return v ? v + suffix : '';
     return v + suffix;
   }
@@ -674,7 +677,7 @@ export class DateTime {
   /** 计算diff-secs */
   dseconds(up: boolean = true, suffix: any | string = 0): any {
     let v = DateTime.Dseconds(this._timestamp, up);
-    if (typeof(suffix) == 'string')
+    if (typeof (suffix) == 'string')
       return v ? v + suffix : '';
     return v + suffix;
   }
@@ -964,7 +967,7 @@ export class ArrayT {
 
   /** 初始化数量 */
   static Allocate<T>(count: number, def?: any): T[] {
-    let isfun = typeof(def) == 'function';
+    let isfun = typeof (def) == 'function';
     let f = <any>def;
     let r = [];
     for (let i = 0; i < count; ++i) {
@@ -1435,8 +1438,7 @@ export class ArrayT {
         t.push(o);
         h[k] = true;
       });
-    }
-    else {
+    } else {
       arr.forEach((o: any) => {
         if (t.indexOf(o) == -1)
           t.push(o);
@@ -1569,8 +1571,7 @@ export class IndexedMap<K, T> {
       let idx = this._keys.indexOf(k);
       this._keys[idx] = k;
       this._vals[idx] = v;
-    }
-    else {
+    } else {
       this._keys.push(k);
       this._vals.push(v);
     }
@@ -1583,8 +1584,7 @@ export class IndexedMap<K, T> {
     if (<any>k in this._map) {
       let idx = this._keys.indexOf(k);
       this._vals[idx] = v;
-    }
-    else {
+    } else {
       this._keys.push(k);
       this._vals.push(v);
     }

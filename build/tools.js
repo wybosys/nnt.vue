@@ -141,22 +141,42 @@ function ListRoutesInDirectory(dir, cur, result, site) {
 
 function GenSites() {
   dir = 'sites'
+  sites = []
   fs.readdirSync('src/' + dir).forEach(each => {
     let st = fs.statSync('src/' + dir + '/' + each)
     if (st.isDirectory()) {
+      sites.push(each)
       GenRoutesInSite(dir + '/' + each, each)
     }
   })
 
   // 生成基础的routers，来支持多站点
   let content = [];
+  // 导入对象
   content.push('const _ = () => import("../nnt/Site.vue")')
+  sites.forEach(site => {
+    content.push('const ' + site + ' = () => import("./' + site + '")')
+  })
+
+  // 生成路由配置
   content.push('')
   content.push('export default {')
+
+  // 生成gateway路由配置
   content.push('\troutes: [')
   content.push("\t\t{\n\t\t\tpath: '/',\n\t\t\tcomponent: _,\n\t\t\tname: '_site_'\n\t\t},")
   content.push("\t\t{\n\t\t\tpath: '/:site',\n\t\t\tcomponent: _,\n\t\t\tname: '_site__'\n\t\t}")
-  content.push('\t]')
+  content.push('\t],')
+
+  // 生成sites的配置
+  content.push('\tsites: {')
+  let sitecontents = []
+  sites.forEach(each => {
+    sitecontents.push('\t\t' + each + ': ' + each)
+  })
+  content.push(sitecontents.join(',\n'))
+  content.push('\t}')
+
   content.push('}')
   fs.writeFileSync('src/router/index.ts', content.join('\n'))
 }
