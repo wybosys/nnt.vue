@@ -77,7 +77,7 @@ function GenRoutesInSite(srcdir, site) {
   for (let key in routes) {
     let name = key.replace(/\//g, '_')
     imports.push('const ' + name + ' = () => import("../sites/' + site + routes[key] + '")')
-    defs.push("\t{\n\t\tpath: '" + key + "',\n\t\tcomponent: " + name + ",\n\t\tname: '" + name + "'\n\t}")
+    defs.push("\t{\n\t\tpath: '/" + site + key + "',\n\t\tcomponent: " + name + ",\n\t\tname: '" + name + "'\n\t}")
   }
 
   // 如果是二级目录，则需要生成额外的router
@@ -165,7 +165,8 @@ function GenSites() {
   // 生成gateway路由配置
   content.push('\troutes: [')
   content.push("\t\t{\n\t\t\tpath: '/',\n\t\t\tcomponent: _,\n\t\t\tname: '_site_'\n\t\t},")
-  content.push("\t\t{\n\t\t\tpath: '/:site',\n\t\t\tcomponent: _,\n\t\t\tname: '_site__'\n\t\t}")
+  content.push("\t\t{\n\t\t\tpath: '/:site',\n\t\t\tcomponent: _,\n\t\t\tname: '_site__'\n\t\t},")
+  content.push("\t\t{\n\t\t\tpath: '*',\n\t\t\tcomponent: _,\n\t\t\tname: '_any_'\n\t\t}")
   content.push('\t],')
 
   // 生成sites的配置

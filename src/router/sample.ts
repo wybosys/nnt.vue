@@ -6,27 +6,27 @@ const _sample = () => import("../sites/sample/Sample.vue")
 
 export default [
 	{
-		path: '/',
+		path: '/sample/',
 		component: _,
 		name: '_'
 	},
 	{
-		path: '/audiorecorder',
+		path: '/sample/audiorecorder',
 		component: _audiorecorder,
 		name: '_audiorecorder'
 	},
 	{
-		path: '/echo',
+		path: '/sample/echo',
 		component: _echo,
 		name: '_echo'
 	},
 	{
-		path: '/helloworld',
+		path: '/sample/helloworld',
 		component: _helloworld,
 		name: '_helloworld'
 	},
 	{
-		path: '/sample',
+		path: '/sample/sample',
 		component: _sample,
 		name: '_sample'
 	},

@@ -9,14 +9,22 @@ import {Application, IRoute} from "./Application";
 
 const KEY_CURRENT_SITE = '::nnt::vue::sites::current'
 
+// 当前站点已经加载
+let SITE_LOADED = false
+
 export default {
   name: 'Site',
+  inject: ['reload'],
   data() {
     return {
       message: ''
     }
   },
   mounted() {
+    if (SITE_LOADED)
+      return
+    SITE_LOADED = true
+
     // 通过url传递
     let site = this.$route.params.site
     if (!site)
@@ -43,11 +51,17 @@ export default {
     // 加载该站点的router
     sites[site]().then(obj => {
       let routes: IRoute[] = obj.default
-      this.$router.options.routes = routes
-      this.$router.addRoutes(this.$router.options.routes)
 
-      // 跳转到新的根页面
-      Application.shared.push('/echo')
+      // 增加新的
+      this.$router.flushRoutes(routes)
+
+      // 设置为当前，以跳转后续的页面
+      Application.shared.site = '/' + site
+
+      // 跳转到首页面
+      // this.$route.path
+      if (!Application.shared.push('/sample'))
+        this.reload()
     })
   }
 }

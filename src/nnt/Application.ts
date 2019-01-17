@@ -28,6 +28,52 @@ export interface IAppliationLaunchOption {
   template?: string;
 }
 
+// 为了支持动态替换router，替换传入Vue
+class RouterWrapper {
+
+  constructor(routes: IRoute[]) {
+    this._router = new Router({
+      mode: 'history',
+      routes: routes
+    })
+  }
+
+  flushRoutes(routes: IRoute[]) {
+    this._router = new Router({
+      mode: 'history',
+      routes: routes
+    })
+  }
+
+  // 带private的是为了模拟Router的接口
+  private init(obj: any) {
+    (<any>this._router).init(obj)
+  }
+
+  private get history() {
+    return (<any>this._router).history
+  }
+
+  private addRoutes(obj: any) {
+    this._router.addRoutes(obj)
+  }
+
+  push(location: string): boolean {
+    if (location == this._router.currentRoute.path) {
+      return false
+    }
+    this._router.push(location)
+    return true
+  }
+
+  // 回上一个
+  back() {
+    this._router.back();
+  }
+
+  private _router: Router;
+}
+
 export class Application {
   constructor(opt: IAppliationLaunchOption) {
     Application.shared = this;
@@ -57,7 +103,7 @@ export class Application {
   template: string = 'App';
 
   // vue-router的实例
-  private _router: Router;
+  private _router: RouterWrapper;
 
   // 全局的单件
   static shared: Application;
@@ -86,11 +132,8 @@ export class Application {
 
   // 启动应用
   start() {
+    this._router = new RouterWrapper(this.router.routes)
     // 启动VUE
-    this._router = new Router({
-      mode: 'history',
-      routes: this.router.routes
-    })
     let opts: IndexedObject = {
       el: this.el,
       router: this._router,
@@ -111,13 +154,16 @@ export class Application {
     Vue.prototype['$' + name] = plugin;
   }
 
+  // 当前的站点
+  site: string = ''
+
   // 推入页面
-  push(location: string) {
-    this._router.push(location);
+  push(location: string): boolean {
+    return this._router.push(this.site + location)
   }
 
   // 回上一个
   goback() {
-    this._router.back();
+    this._router.back()
   }
 }
