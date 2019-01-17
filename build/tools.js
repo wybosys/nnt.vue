@@ -35,7 +35,7 @@ function GenRoutes(srcdir, outputfile) {
   for (let key in routes) {
     let name = key.replace(/\//g, '_')
     imports.push('const ' + name + ' = () => import("../components' + routes[key] + '")')
-    defs.push("\t{\n\t\tpath: '" + key + "',\n\t\tcomponent: " + name + ",\n\t\tname: '" + name + "'\n\t}")
+    defs.push("\t\t{\n\t\t\tpath: '" + key + "',\n\t\t\tcomponent: " + name + ",\n\t\t\tname: '" + name + "'\n\t\t}")
   }
 
   // 如果是二级目录，则需要生成额外的router
@@ -51,9 +51,11 @@ function GenRoutes(srcdir, outputfile) {
 
   content = imports.join('\n')
   content += '\n\n'
-  content += 'export default [\n'
+  content += 'export default {\n'
+  content += '\troutes: [\n'
   content += defs.join(',\n')
-  content += '\n]\n'
+  content += ']\n'
+  content += '}\n'
 
   // 保存
   fs.writeFileSync('src/router/' + outputfile + '.ts', content)
@@ -156,13 +158,13 @@ function GenSites() {
   content.push("\t\t{\n\t\t\tpath: '/:site',\n\t\t\tcomponent: _,\n\t\t\tname: '_site__'\n\t\t}")
   content.push('\t]')
   content.push('}')
-  fs.writeFileSync('src/router/routes.ts', content.join('\n'))
+  fs.writeFileSync('src/router/index.ts', content.join('\n'))
 }
 
 if (process.argv.indexOf('stop') != -1) {
   StopDevServer()
 } else if (process.argv.indexOf('routes') != -1) {
-  GenRoutes('components', 'routes')
+  GenRoutes('components', 'index')
 } else if (process.argv.indexOf('sites') != -1) {
   GenSites()
 }

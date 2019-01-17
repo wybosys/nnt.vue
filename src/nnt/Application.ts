@@ -12,7 +12,7 @@ declare let VConsole: any;
 
 export interface IApplicationRouter {
   routes: { path: string, component: any, name: string }[],
-  sites: any[]
+  sites?: any[]
 }
 
 export interface IAppliationLaunchOption {
