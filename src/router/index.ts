@@ -1,7 +1,17 @@
-import Router from 'vue-router'
-import routes from './routes'
+const _ = () => import("../nnt/Site.vue")
 
-export default new Router({
-  mode: "history",
-  routes: routes
-})
+export default {
+  routes: [
+    {
+      path: '/',
+      component: _,
+      name: '_site_'
+    },
+    {
+      path: '/:site',
+      component: _,
+      name: '_site__'
+    }
+  ],
+  sites: []
+}

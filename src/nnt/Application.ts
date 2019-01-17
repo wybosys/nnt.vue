@@ -10,9 +10,14 @@ Vue.config.productionTip = false
 Vue.use(Router)
 declare let VConsole: any;
 
+export interface IApplicationRouter {
+  routes: { path: string, component: any, name: string }[],
+  sites: any[]
+}
+
 export interface IAppliationLaunchOption {
   el?: string;
-  router: Router;
+  router: IApplicationRouter;
   app: any;
   template?: string;
 }
@@ -41,9 +46,12 @@ export class Application {
 
   // 对应于vue初始化的设置
   el: string = '#app';
-  router: Router;
+  router: IApplicationRouter;
   app: any;
   template: string = 'App';
+
+  // vue-router的实例
+  private _router: Router;
 
   // 全局的单件
   static shared: Application;
@@ -73,9 +81,13 @@ export class Application {
   // 启动应用
   start() {
     // 启动VUE
+    this._router = new Router({
+      mode: 'history',
+      routes: this.router.routes
+    })
     let opts: IndexedObject = {
       el: this.el,
-      router: this.router,
+      router: this._router,
       template: '<' + this.template + '/>',
       components: {}
     };
@@ -95,11 +107,11 @@ export class Application {
 
   // 推入页面
   push(location: string) {
-    this.router.push(location);
+    this._router.push(location);
   }
 
   // 回上一个
   goback() {
-    this.router.back();
+    this._router.back();
   }
 }
