@@ -997,6 +997,8 @@ export class ArrayT {
 
   /** 使用比较函数来判断是否包含元素 */
   static Contains<L, R>(arr: L[], o: R, eqfun?: (l: L, o: R) => boolean, eqctx?: any): boolean {
+    if (!arr)
+      return false;
     return arr.some((each: any): boolean => {
       return ObjectT.IsEqual(each, o, eqfun, eqctx);
     }, this);

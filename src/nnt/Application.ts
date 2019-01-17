@@ -10,8 +10,14 @@ Vue.config.productionTip = false
 Vue.use(Router)
 declare let VConsole: any;
 
+export interface IRoute {
+  path: string,
+  component: any,
+  name: string
+}
+
 export interface IApplicationRouter {
-  routes: { path: string, component: any, name: string }[],
+  routes: IRoute[],
   sites?: IndexedType<any>
 }
 
