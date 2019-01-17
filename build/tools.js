@@ -145,6 +145,15 @@ function GenSites() {
       GenRoutesInSite(dir + '/' + each, each)
     }
   })
+
+  // 生成基础的routers，来支持多站点
+  let content = [];
+  content.push('const _ = () => import("../nnt/Site.vue")')
+  content.push('')
+  content.push('export default [')
+  content.push("\t{\n\t\tpath: '/',\n\t\tcomponent: _,\n\t\tname: '_site_'\n\t}")
+  content.push(']')
+  fs.writeFileSync('src/router/routes.ts', content.join('\n'))
 }
 
 if (process.argv.indexOf('stop') != -1) {
