@@ -55,8 +55,14 @@ export default {
       // 增加新的
       this.$router.flushRoutes(routes)
 
+      // 删除掉当前route中包含site的部分再跳转
+      let path = this.$route.path
+      path = path.replace('/' + site, '')
+      if (path == '')
+        path = '/'
+
       // 跳转到首页面
-      Application.shared.push('/')
+      Application.shared.push(path)
     })
   }
 }
