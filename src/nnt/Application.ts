@@ -54,6 +54,7 @@ class RouterWrapper {
 
     // 对path进行修改
     t.beforeEach((to, from, next) => {
+      console.log(to)
       next()
     })
 
