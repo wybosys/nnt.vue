@@ -34,6 +34,7 @@ class RouterWrapper {
   constructor(routes: IRoute[]) {
     this._router = new Router({
       mode: 'history',
+      base: '/framework/vue',
       routes: routes
     })
   }
@@ -41,6 +42,7 @@ class RouterWrapper {
   flushRoutes(routes: IRoute[]) {
     let t: any = new Router({
       mode: 'history',
+      base: '/framework/vue',
       routes: routes
     })
     t.init(this._router.app)
