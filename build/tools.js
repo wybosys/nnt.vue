@@ -77,7 +77,7 @@ function GenRoutesInSite(srcdir, site) {
   for (let key in routes) {
     let name = key.replace(/\//g, '_')
     imports.push('const ' + name + ' = () => import("../sites/' + site + routes[key] + '")')
-    defs.push("\t{\n\t\tpath: '/" + site + key + "',\n\t\tcomponent: " + name + ",\n\t\tname: '" + name + "'\n\t}")
+    defs.push("\t{\n\t\tpath: '" + key + "',\n\t\tcomponent: " + name + ",\n\t\tname: '" + name + "'\n\t}")
   }
 
   // 如果是二级目录，则需要生成额外的router

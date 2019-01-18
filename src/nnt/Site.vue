@@ -55,13 +55,8 @@ export default {
       // 增加新的
       this.$router.flushRoutes(routes)
 
-      // 设置为当前，以跳转后续的页面
-      Application.shared.site = '/' + site
-
       // 跳转到首页面
-      // this.$route.path
-      if (!Application.shared.push('/sample'))
-        this.reload()
+      Application.shared.push('/')
     })
   }
 }

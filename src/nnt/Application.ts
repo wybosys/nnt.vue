@@ -39,10 +39,12 @@ class RouterWrapper {
   }
 
   flushRoutes(routes: IRoute[]) {
-    this._router = new Router({
+    let t: any = new Router({
       mode: 'history',
       routes: routes
     })
+    t.init(this._router.app)
+    this._router = t
   }
 
   // 带private的是为了模拟Router的接口
@@ -58,12 +60,8 @@ class RouterWrapper {
     this._router.addRoutes(obj)
   }
 
-  push(location: string): boolean {
-    if (location == this._router.currentRoute.path) {
-      return false
-    }
+  push(location: string) {
     this._router.push(location)
-    return true
   }
 
   // 回上一个
@@ -154,12 +152,9 @@ export class Application {
     Vue.prototype['$' + name] = plugin;
   }
 
-  // 当前的站点
-  site: string = ''
-
   // 推入页面
-  push(location: string): boolean {
-    return this._router.push(this.site + location)
+  push(location: string) {
+    this._router.push(location)
   }
 
   // 回上一个
