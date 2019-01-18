@@ -43,21 +43,21 @@ class RouterWrapper {
   }
 
   private createRouter(routes: IRoute[]) {
-    let t: any = new Router({
-      mode: 'history',
-      routes: routes
-    })
-
     // 如果存在DEVOPS_DOMAIN，则需从path中剔除掉domain再进行跳转
     let domain = process.env.DEVOPS_DOMAIN
     let produ = process.env.NODE_ENV != 'development'
+
+    let t: any = new Router({
+      mode: 'history',
+      routes: routes,
+      base: domain
+    })
 
     // 对path进行修改
     t.beforeEach((to, from, next) => {
       let path = to.path
       if (path.indexOf(domain) == 0) {
         path = path.replace(domain, '')
-        console.log(path)
         next(path)
       } else {
         next()
