@@ -11,7 +11,7 @@ const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
 const portfinder = require('portfinder')
 const {VueLoaderPlugin} = require('vue-loader')
 const fs = require("fs")
-const {StopDevServer, SaveDevServer} = require('./tools')
+const tools = require('./tools')
 
 const HOST = process.env.HOST
 const PORT = process.env.PORT && Number(process.env.PORT)
@@ -100,5 +100,5 @@ module.exports = new Promise((resolve, reject) => {
 })
 
 // 将当前的pid保存起来
-StopDevServer();
-SaveDevServer();
+tools.StopDevServer();
+tools.SaveDevServer();

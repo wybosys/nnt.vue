@@ -182,6 +182,12 @@ function GenSites() {
   fs.writeFileSync('src/router/index.ts', content.join('\n'))
 }
 
+function GetDevopsDomain() {
+  let devops = JSON.parse(fs.readFileSync('devops.json'))
+  let path = devops.path.substr(15)
+  return path
+}
+
 if (process.argv.indexOf('stop') != -1) {
   StopDevServer()
 } else if (process.argv.indexOf('routes') != -1) {
@@ -192,5 +198,6 @@ if (process.argv.indexOf('stop') != -1) {
 
 module.exports = {
   StopDevServer,
-  SaveDevServer
+  SaveDevServer,
+  GetDevopsDomain
 }

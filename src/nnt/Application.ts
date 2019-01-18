@@ -9,6 +9,7 @@ import "babel-polyfill";
 Vue.config.productionTip = false
 Vue.use(Router)
 declare let VConsole: any;
+declare let process: any;
 
 export interface IRoute {
   path: string,
@@ -32,21 +33,31 @@ export interface IAppliationLaunchOption {
 class RouterWrapper {
 
   constructor(routes: IRoute[]) {
-    this._router = new Router({
-      mode: 'history',
-      base: '/framework/vue',
-      routes: routes
-    })
+    this._router = this.createRouter(routes)
   }
 
   flushRoutes(routes: IRoute[]) {
-    let t: any = new Router({
-      mode: 'history',
-      base: '/framework/vue',
-      routes: routes
-    })
+    let t = this.createRouter(routes)
     t.init(this._router.app)
     this._router = t
+  }
+
+  private createRouter(routes: IRoute[]) {
+    let t: any = new Router({
+      mode: 'history',
+      routes: routes
+    })
+
+    // 如果存在DEVOPS_DOMAIN，则需从path中剔除掉domain再进行跳转
+    let domain = process.env.DEVOPS_DOMAIN
+    let produ = process.env.NODE_ENV != 'development'
+
+    // 对path进行修改
+    t.beforeEach((to, from, next) => {
+      next()
+    })
+
+    return t
   }
 
   // 带private的是为了模拟Router的接口

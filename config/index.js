@@ -3,6 +3,7 @@
 // see http://vuejs-templates.github.io/webpack for documentation.
 
 const path = require('path')
+const tools = require('../build/tools')
 
 module.exports = {
   dev: {
@@ -43,7 +44,7 @@ module.exports = {
     // Paths
     assetsRoot: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: 'static',
-    assetsPublicPath: '/framework/nntvue/',
+    assetsPublicPath: tools.GetDevopsDomain(),
 
     /**
      * Source Maps
