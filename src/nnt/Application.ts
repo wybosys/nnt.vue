@@ -57,7 +57,7 @@ class RouterWrapper {
       let path = to.path
       path = path.replace(domain, '')
       console.log(path)
-      next('/sample')
+      next(to.path)
     })
 
     return t
