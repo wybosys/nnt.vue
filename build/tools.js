@@ -146,11 +146,19 @@ function ListRoutesInDirectory(dir, cur, result, site) {
 function GenSites() {
   dir = 'sites'
   sites = []
+  defaultsite = null
   fs.readdirSync('src/' + dir).forEach(each => {
     let st = fs.statSync('src/' + dir + '/' + each)
     if (st.isDirectory()) {
       sites.push(each)
       GenRoutesInSite(dir + '/' + each, each)
+      // 读取配置
+      let cfg = 'src/' + dir + '/' + each + '/config.json'
+      if (fs.existsSync(cfg)) {
+        let cfgobj = JSON.parse(fs.readFileSync(cfg))
+        if (cfgobj.default)
+          defaultsite = each
+      }
     }
   })
 
@@ -179,6 +187,8 @@ function GenSites() {
   sites.forEach(each => {
     sitecontents.push('\t\t' + each + ': ' + each)
   })
+  if (defaultsite && !('default' in sites))
+    sitecontents.push('\t\tdefault: ' + defaultsite)
   content.push(sitecontents.join(',\n'))
   content.push('\t}')
 

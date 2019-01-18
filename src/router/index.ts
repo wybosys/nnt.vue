@@ -22,6 +22,7 @@ export default {
 	],
 	sites: {
 		sample: sample,
-		test: test
+		test: test,
+		default: sample
 	}
 }

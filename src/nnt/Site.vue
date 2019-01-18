@@ -29,10 +29,6 @@ export default {
     let site = this.$route.params.site
     if (!site)
       site = Storage.shared.value(KEY_CURRENT_SITE)
-    if (!site) {
-      this.message = '404 SITE NOT FOUND'
-      return
-    }
 
     // 查询一下site是否存在
     let sites = Application.shared.router.sites
@@ -40,8 +36,12 @@ export default {
       // 从storage加载，放置二次重入带来的二级路径被踢掉
       site = Storage.shared.value(KEY_CURRENT_SITE)
       if (!(site in sites)) {
-        this.message = '404 SITE NOT AVALIABLE'
-        return
+        // 读取默认的
+        site = 'default'
+        if (!(site in sites)) {
+          this.message = '404 SITE NOT AVALIABLE'
+          return
+        }
       }
     }
 
