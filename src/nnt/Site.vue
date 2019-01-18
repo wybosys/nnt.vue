@@ -62,7 +62,6 @@ export default {
         path = '/'
 
       // 跳转到首页面
-      console.log('跳转到' + path)
       Application.shared.push(path)
     })
   }

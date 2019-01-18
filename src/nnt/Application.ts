@@ -55,9 +55,13 @@ class RouterWrapper {
     // 对path进行修改
     t.beforeEach((to, from, next) => {
       let path = to.path
-      path = path.replace(domain, '')
-      console.log(path)
-      next({'path': to.path})
+      if (path.indexOf(domain) == 0) {
+        path = path.replace(domain, '')
+        console.log(path)
+        next(path)
+      } else {
+        next()
+      }
     })
 
     return t
