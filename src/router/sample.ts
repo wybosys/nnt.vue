@@ -29,30 +29,5 @@ export default [
 		path: '/sample',
 		component: _sample,
 		name: '_sample'
-	},
-	{
-		path: '/framework/nntvue/',
-		component: _,
-		name: 'devops_'
-	},
-	{
-		path: '/framework/nntvue/audiorecorder',
-		component: _audiorecorder,
-		name: 'devops_audiorecorder'
-	},
-	{
-		path: '/framework/nntvue/echo',
-		component: _echo,
-		name: 'devops_echo'
-	},
-	{
-		path: '/framework/nntvue/helloworld',
-		component: _helloworld,
-		name: 'devops_helloworld'
-	},
-	{
-		path: '/framework/nntvue/sample',
-		component: _sample,
-		name: 'devops_sample'
 	}
 ]

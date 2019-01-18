@@ -39,6 +39,7 @@ function GenRoutes(srcdir, outputfile) {
   }
 
   // 如果是二级目录，则需要生成额外的router
+  /*
   if (fs.existsSync('devops.json')) {
     let devops = JSON.parse(fs.readFileSync('devops.json'))
     let path = devops.path.substr(15)
@@ -48,6 +49,7 @@ function GenRoutes(srcdir, outputfile) {
       defs.push("\t{\n\t\tpath: '" + key + "',\n\t\tcomponent: " + name + ",\n\t\tname: 'devops" + name + "'\n\t}")
     }
   }
+  */
 
   content = imports.join('\n')
   content += '\n\n'
@@ -81,6 +83,7 @@ function GenRoutesInSite(srcdir, site) {
   }
 
   // 如果是二级目录，则需要生成额外的router
+  /*
   if (fs.existsSync('devops.json')) {
     let devops = JSON.parse(fs.readFileSync('devops.json'))
     let path = devops.path.substr(15)
@@ -90,6 +93,7 @@ function GenRoutesInSite(srcdir, site) {
       defs.push("\t{\n\t\tpath: '" + key + "',\n\t\tcomponent: " + name + ",\n\t\tname: 'devops" + name + "'\n\t}")
     }
   }
+  */
 
   content = imports.join('\n')
   content += '\n\n'
