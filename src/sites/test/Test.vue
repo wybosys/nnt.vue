@@ -1,6 +1,11 @@
 <template>
   <div>
     TEST
+    <ul>
+      <li v-for="(item,index) in '12'" :key="index">
+        此处为测试代码{{item}}
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -16,19 +21,12 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-h1, h2 {
-  font-weight: normal;
-}
+<style lang="scss" scoped>
 ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
+  @include font-dpr(16px);
+  li {
+    padding: 20px;
+    @include border-1px($color-base)
+  }
 }
 </style>

@@ -3,6 +3,7 @@ const path = require('path')
 const config = require('../config')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const packageConfig = require('../package.json')
+const fs = require('fs')
 
 exports.assetsPath = function (_path) {
   const assetsSubDirectory = process.env.NODE_ENV === 'production'
@@ -26,6 +27,14 @@ exports.cssLoaders = function (options) {
     loader: 'postcss-loader',
     options: {
       sourceMap: options.sourceMap
+    }
+  }
+
+  var px2remLoader = {
+    loader: 'px2rem-loader',
+    // loader: 'postcss-px2rem',
+    options: {
+      remUnit: 75
     }
   }
 
@@ -54,13 +63,62 @@ exports.cssLoaders = function (options) {
     }
   }
 
+  let resources = [];
+  function findAllFile(dirPath,) {
+    if (fs.existsSync(dirPath)) {
+      const files = fs.readdirSync(dirPath);
+      files.forEach(function (item, index) {
+        let nowDir = path.resolve(dirPath, item);
+        let stat = fs.statSync(nowDir);
+        if (stat.isDirectory() === true) {
+          findAllFile(nowDir)
+        } else {
+          if (path.extname(nowDir) === '.scss') {
+            resources.push(nowDir)
+          }
+        }
+      });
+    } else {
+      console.warn(`${dirPath}该目录不存在`)
+    }
+  }
+  findAllFile(path.resolve(__dirname, '../src/style/'))
+
+  console.log(resources)
+  function generateSassResourceLoader() {
+    var loaders = [
+      cssLoader,
+      px2remLoader,
+      'postcss-loader',
+      'sass-loader',
+      {
+        loader: 'sass-resources-loader',
+        options: {
+          resources: resources
+        }
+      }
+    ];
+
+    if (options.extract) {
+      return ExtractTextPlugin.extract({
+        use: loaders,
+        fallback: 'vue-style-loader',
+        publicPath: '../../'
+      })
+    } else {
+      return ['vue-style-loader'].concat(loaders)
+    }
+  }
+
   // https://vue-loader.vuejs.org/en/configurations/extract-css.html
   return {
     css: generateLoaders(),
     postcss: generateLoaders(),
     less: generateLoaders('less'),
-    sass: generateLoaders('sass', { indentedSyntax: true }),
-    scss: generateLoaders('sass'),
+    // sass: generateLoaders('sass', { indentedSyntax: true }),
+    // scss: generateLoaders('sass'),
+    sass: generateSassResourceLoader(),
+    scss: generateSassResourceLoader(),
     stylus: generateLoaders('stylus'),
     styl: generateLoaders('stylus')
   }
