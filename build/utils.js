@@ -84,7 +84,6 @@ exports.cssLoaders = function (options) {
   }
   findAllFile(path.resolve(__dirname, '../src/style/'))
 
-  console.log(resources)
   function generateSassResourceLoader() {
     var loaders = [
       cssLoader,
