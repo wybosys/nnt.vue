@@ -1,4 +1,4 @@
-const _ = () => import("../nnt/Site.vue")
+const _ = () => import("../nnt/sites/Index.vue")
 const sample = () => import("./sample")
 const test = () => import("./test")
 
