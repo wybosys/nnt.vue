@@ -113,7 +113,7 @@ function GenRoutesInSite(srcdir, site) {
     let cfg = routes[key]
     let name = key.replace(/\//g, '_')
     imports.push('const ' + name + ' = () => import("../sites/' + site + cfg.file + '")')
-    defs.push(" {\n  path: '" + key + "',\n  component: " + name + ",\n  name: '" + name + "'\n }")
+    defs.push("  {\n    path: '" + key + "',\n    component: " + name + ",\n    name: '" + name + "'\n  }")
   }
 
   // 如果是二级目录，则需要生成额外的router

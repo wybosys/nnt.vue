@@ -3,14 +3,14 @@ const _ = () => import("../sites/test/Test.vue")
 const _test_test = () => import("../sites/test/Test.vue")
 
 export default [
- {
-  path: '/',
-  component: _,
-  name: '_'
- },
- {
-  path: '/test/test',
-  component: _test_test,
-  name: '_test_test'
- }
+  {
+    path: '/',
+    component: _,
+    name: '_'
+  },
+  {
+    path: '/test/test',
+    component: _test_test,
+    name: '_test_test'
+  }
 ]
