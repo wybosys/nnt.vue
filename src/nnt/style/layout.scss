@@ -1,0 +1,29 @@
+
+.flex-center-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-between-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.flex-around-container {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.flex-vertical-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.no-wrap {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
