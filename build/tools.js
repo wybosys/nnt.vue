@@ -34,41 +34,44 @@ function UpcaseFirst(str) {
   return str[0].toUpperCase() + str.substr(1)
 }
 
-function GenRoutes(srcdir, outputfile) {
+function GenRoutes(outputfile, ...srcdirs) {
   // 默认输出到src/router/index.ts中
-  // 默认组件保存在src/components中
 
   // { path: filepath }
-  let routes = {}
-
-  // 列出所有目录中的组件
-  ListRoutesInDirectory('src/' + srcdir, '', routes)
-
   let imports = []
   let defs = []
 
-  for (let key in routes) {
-    let cfg = routes[key]
-    //let name = key.split('/').map(UppercaseFirst).join('') + '_'
-    let name = key.replace(/\//g, '_')
+  // 列出所有目录中的组件
+  srcdirs.forEach(e => {
+    let dir = 'src/' + e
+    if (fs.existsSync(dir)) {
+      let routes = {}
+      ListRoutesInDirectory(dir, '', routes)
 
-    imports.push('const ' + name + ' = () => import("../components' + cfg.file + '")')
-    let def = "    {"
-    let arr = [
-      "\n      path: '" + key + "'",
-      "\n      component: " + name,
-      "\n      name: '" + name + "'"
-    ]
+      for (let key in routes) {
+        let cfg = routes[key]
+        //let name = key.split('/').map(UppercaseFirst).join('') + '_'
+        let name = key.replace(/\//g, '_')
 
-    if (cfg.module) {
-      arr.push("\n      module: true")
-      arr.push("\n      priority: " + cfg.priority)
-      arr.push("\n      label: '" + cfg.label + "'")
+        imports.push('const ' + name + ' = () => import("../' + e + cfg.file + '")')
+        let def = "    {"
+        let arr = [
+          "\n      path: '" + key + "'",
+          "\n      component: " + name,
+          "\n      name: '" + name + "'"
+        ]
+
+        if (cfg.module) {
+          arr.push("\n      module: true")
+          arr.push("\n      priority: " + cfg.priority)
+          arr.push("\n      label: '" + cfg.label + "'")
+        }
+
+        def += arr.join(',') + "\n    }"
+        defs.push(def)
+      }
     }
-
-    def += arr.join(',') + "\n    }"
-    defs.push(def)
-  }
+  })
 
   // 如果是二级目录，则需要生成额外的router
   /*
@@ -253,7 +256,7 @@ function GetDevopsDomain() {
 if (process.argv.indexOf('stop') != -1) {
   StopDevServer()
 } else if (process.argv.indexOf('routes') != -1) {
-  GenRoutes('components', 'index')
+  GenRoutes('index', 'app', 'components')
 } else if (process.argv.indexOf('sites') != -1) {
   GenSites()
 }
